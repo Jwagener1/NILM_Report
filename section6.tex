@@ -1,0 +1,39 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 6.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Conclusion}
+
+\subsection{Summary of the work completed}
+This report summarises work carried out to design a Non-Intrusive Load Monitoring (NILM) device. The objective was to improve upon known methods to create an identification algorithm better suited for implementation on embedded platforms.
+\par
+A literature survey was conducted to obtain information about identification features and methods that have been used in this context by other researchers. The software and hardware for a NILM device was then designed from first principles. The design made use of a Beaglebone AI as the embedded platform. C code was developed for the ARM core and the PRU core. The C code was designed to be called from the main Python program. The system was then fully integrated. Supporting hardware and software was then developed to facilitate automated data collection. The random forest algorithm was then trained, and the trees were integrated into the full system. A number of tests were subsequently carried out. An automated test system was set up to automatically switch loads on or off and record the result of the prediction. The main result is shown in section~\ref{sec:Load_ID_test}.
+\subsection{Summary of the observations and findings}
+A load identification algorithm was successfully practically implemented on an embedded platform which then improved. It was found that it was possible to increase the accuracy of identification by creating separate trees for every load. The random forest algorithm was used to identify more complex loads. It was found that, by implementing the detection algorithm using this method, the accuracy
+achieved was \qty{94.84}{\percent}. This is an increase of \qty{8.84}{\percent} in relation to the method used by Gouhua \emph{et al} \cite{RN39}.
+\par
+An important discovery is that, for every unique load, there is an optimal decision tree design that benefits from an optimal number of features and depth. One implication of this is that the design of the random tree forest can be optimised for every load. Care needs to be taken when performing this optimisation as limiting the features or restricting the depth might increase the speed and reduce the complexity, but this will come at the cost of decreased identification accuracy. 
+
+\subsection{Contribution}
+The use of a Beaglebone AI (Linux based embedded platform) is completely new and thus needed to be mastered before any software could be created. This is not one of the development platforms used in the undergraduate program. Linux is an open source operating system. While students might have previously been exposed to the customisation of the operating system, customisation for implementation on an embedded platform is completely novel.
+\par
+Specifically, the Beaglebone and Beaglebone AI make use of capes which are also known as device tree overlays. These overlays are required to enable certain functionality of the Beaglebone, such as pin control. While the Beaglebone has an active development community meaning there are many examples of and resources about Beaglebone available, the Beaglebone AI has a much smaller development community and, as such, much more development work is required to achieve the same functionality as its non-AI counterpart.
+\par
+The Beaglebone also features a multicore design. It has two dedicated ARM cores for general processing and 4-PRUs that are 200 \qty{200}{\MHz} microprocessors. Unlike the ARM cores', the PRU's have low level control over the pins meaning alteration of the state of the pins can be made much faster than the general ARM core. In order to interface the ARM core and the PRU core, the PRU cookbook provided on the Beaglebone website was consulted.  
+\par 
+Code was mostly developed by the student, though there was some reliance on existing libraries. The only library functions that were primarily made use of were those that facilitated a speed increase to well-documented mathematical transforms, like the FFT. 
+
+\subsection{Future work}
+Although the algorithm is able to accurately and reliably predict the state of connected loads, it has limited expansion with regard to the number loads. The algorithm did not make us of any of the new detection features or the other detection algorithms discussed in literature. Future work should be aimed at combining the other features and methods to create a detection algorithm that is not limited in the number of loads that it is able to identify.
+\par
+The processing platform used (the Beaglebone AI) was not an optimal choice. Selecting a new processing platform that features two independent onboard 16bit-ADCs may prove particularly difficult.
+\par
+The limited testing done to prove the functionality in this report was as a result of only using one location and power-grid. Future work should include investigating the reliability of the system in different areas - possibly also in different countries.  
+
+\newpage
+
+%% End of File.
+
+

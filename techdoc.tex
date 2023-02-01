@@ -1,0 +1,227 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Technical Documentation.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{HARDWARE part of the project}
+
+\subsection{Record 1. System block diagram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/Appendix/Hardware.png}
+    \caption{System Block Diagram}
+    \label{fig:Hardware}
+\end{figure}
+
+
+\subsection{Record 2.  Systems level description of the design}
+
+The hardware described by the block diagram in figure~\ref{fig:Hardware} show the hardware used to measure that voltage and current of common house hold appliances. The first part of the design is the galvanic isolation of the device from the rest of the hardware. This is implemented using transformers. The current signal is then converted to a voltage signal by means of a transimpedance amplifier. The two signals are then amplified or reduced to a voltage range that the ADC is able to measure by means of the ADC Driver. These signal are then parsed through a first order low pass AA filter before being sampled by the ADCs and the result transfer to the Beaglebone.
+
+
+\subsection{Record 3. Complete circuit diagrams and description}
+
+
+The Figure~\ref{ap:Full} is the full circuit schematic of the analogue front. The equations on how the values are calculated can be found in section~\ref{sec:Mains_Voltage_Signal_Isolation_and_Interface}~to~\ref{sec:D_ref}. These circuits describe the method of safely isolating the user and the device from the dangerous mains voltage that is to be sampled. They are both powered by 2 9 volt batteries. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/Appendix/Complete_Circuit.png}
+    \caption{Complete Circuit used for the mains interface}
+    \label{ap:Full}
+\end{figure}
+
+The above circuits are then implemented on varioboard with all sub-circuits implemented as replaceable modules.
+
+\subsection{Record 4. Hardware acceptance test procedure}
+
+\begin{enumerate}
+    \item Once the system has been connected mains along with the two 9V batteries it is ready to be calibrated.
+    \item Two probes for an oscilloscope are connected to the voltage signal differential amplifier output. The potentiometer used to trim the voltage to a safe level for the ADC.
+    \item The above item must be repeated for the current measurement.
+    \item Once both the voltages are in the \qty{\pm 2.5}{\volt} range of the ADC the hardware is ready to be used.
+    \item The beaglebone interface lead can now be connected and interfaced.
+\end{enumerate}
+\subsection{Record 5. User guide}
+
+\begin{enumerate}
+    \item The 9V batteries must be connected first.
+    \item The system can then be connected to main via the plug.
+    \item The Beaglebone can then be turned on.
+    \item Loads can be connected and disconnected at the users discretion. 
+\end{enumerate}
+
+
+
+%% --------------------------------------------------------------------
+
+\section{SOFTWARE part of the project}
+
+\subsection{Record 6. Software process flow diagrams}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,thick]
+
+
+
+%Start of dash application
+\node[draw,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block1) 
+    {Start Dash Application};
+ 
+%Loop joining co-ordinate   
+\node[coordinate,below=1cm of block1] (block2) {};
+
+% 1 second interval check 
+\node[draw,
+    diamond,
+    below=of block2,
+    minimum width=2.5cm,
+    inner sep=0] (block3) {\qty{1}{\second} elapsed};
+    
+% Arrow to interval check 
+\draw[-latex] (block1) edge (block3);
+
+%No text node
+\node[left=0.75cm of block3,fill=white,inner sep=0] (block4) {No};
+
+% Interval check -- No 
+\draw (block3) -- (block4);
+
+%Web-Display Update
+\node[draw,
+    left=of block4,
+    minimum width=2.5cm,
+    minimum height=1cm] (block5) {Update Web-Figures};
+%Arrow from "No" to Web update block
+\draw[-latex] (block4) edge (block5);
+
+
+
+%No text node
+\node[right=0.75cm of block3,fill=white,inner sep=0] (block6) {Yes};
+% Interval check -- Yes 
+\draw (block3) -- (block6);
+
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    right=of block6,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block7) {Sample $I_{n} , V_{n}$ \\ \emph{Algorithm~\ref{alg:Sample}}};
+
+\draw[-latex] (block6) edge (block7);
+
+    
+ % Data Data pre-processing
+\node[draw,
+    align=center,
+    below=of block7,
+    minimum width=2.5cm,
+    minimum height=1cm] (block8) {Data pre-processing \\ \emph{Algorithm~\ref{alg:Pre_Process}}};
+\draw[-latex] (block7) edge (block8); 
+
+   
+% Power Calculations
+\node[draw,
+    align=center,
+    below=0.4cm of block8,
+    minimum width=2.5cm,
+    minimum height=1cm] (block9) 
+    {Power Calculations \\ 
+    \emph{Algorithm~\ref{alg:RMS}} \\
+    \emph{Algorithm~\ref{alg:P_inst}} \\
+    \emph{Algorithm~\ref{alg:P_real}} \\
+    \emph{Algorithm~\ref{alg:P_app}} \\
+    };
+\draw[-latex] (block8) edge (block9);
+ 
+%Calculate FFT   
+\node[draw,
+    align=center,
+    below=of block9,
+    minimum width=2.5cm,
+    minimum height=1cm] (block12) {FFT Transform};
+\draw[-latex] (block9) edge (block12); 
+    
+%Classification  
+\node[draw,
+    align=center,
+    below=of block12,
+    minimum width=2.5cm,
+    minimum height=1cm] (block13) {Classification\\ \emph{Algorithm~\ref{alg:deply_DT}}};
+\draw[-latex] (block12) edge (block13); 
+    
+%Energy Calculation  
+\node[draw,
+    align=center,
+    below=of block13,
+    minimum width=2.5cm,
+    minimum height=1cm] (block14) {Energy Calculation};
+\draw[-latex] (block13) edge (block14);
+
+
+\node[coordinate,left=1.5cm of block5] (block15) {};
+
+\draw [-latex](block14) -| (block15);
+\draw [-latex](block15) |- (block2);
+%Loop Back line
+\draw [-latex](block5) -- (block15);
+
+\end{tikzpicture}
+\end{figure}
+
+
+\subsection{Record 7. Explanation of software modules}
+
+The program described by the flow diagram above depicts how the all the pieces of individual software interact with one another to create the final product. The first step is performed using a dash call back that occurs every second. This functions similar to an interrupt on a microcontroller. If one second has elapsed all the power values are calculated and the FFT is performed on the current signal. This information is then sent to the the identification algorithm. Once the identification has been made the the system upadtes the GUI. 
+
+\subsection{Record 8. Complete source code}
+Complete code has been submitted separately on the AMS.
+
+\subsection{Record 9. Software acceptance test procedure}
+After the Beaglebone could9 development IDE is accessed via the the online interface. The PRU Program is launched. The system terminal should indicate running after this has been completed successfully. The main GUI.py program is then launched. An IP-Address will appear in the terminal. Assessing this IP address should load the GUI. If the voltage and current waveforms should look like sine wave and mountain if correct. There should also be a reported PF of around 0.7 
+
+
+\subsection{Record 10. Software user guide}
+
+\begin{enumerate}
+    \item Start the Beaglebone.
+    \item Open the cloud9 IDE.
+    \item Launch the PRU sample subroutine.
+    \item Launch the GUI.py application.
+    \item Open the website by entering the IP Adress into a browser on the same network. The GUI~\ref{fig:Dash_1} should appear.
+    \item Confirm the values presented.
+    \item Leave the web-page open for as long as you want the system to keep running.
+\end{enumerate}
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{Figures/Appendix/Voltage_Sample_GUI.png}
+        \caption{The Dashboard used to control the testing and data collection}
+        \label{fig:Dash_1}
+    \end{figure}
+
+
+%% --------------------------------------------------------------------
+
+\section{EXPERIMENTAL DATA}
+
+\subsection{Record 11. Experimental data}
+
+
+%% End of File.
+
+

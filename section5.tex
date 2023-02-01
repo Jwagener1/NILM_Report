@@ -1,0 +1,69 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 5.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Discussion}
+
+\subsection{Interpretation of results}
+
+The results presented in section~\ref{sec:Results} confirm that the device is able to identify the current state of loads correctly on the connected circuit. In other words, this result confirms that the design functions as intended. However, it must be noted that the tests were only performed in one location, thus a change in location with different voltage and noise may have an impact on these results.
+\par
+The results also indicate that the detection accuracy of the result is not solely dependant on the size of the power draw. This becomes evident when comparing the true positive detection rates of the CFL and the Halogen lights as the CFL was correctly identified \qty{100}{\percent} of the time.
+\par
+The results also indicate that the latency between when loads are identified never exceeds two seconds. This ensures that the total reported energy consumed by the identified loads is accurate. The error in the power measurement was also proven to never exceed that of the \qty{2.5}{\percent}.
+\subsection{Critical evaluation of the design}
+
+\subsubsection{Strong points of the current design}
+The design presented above was able to meet or exceed the design requirements summarised in Table~\ref{tab:Summary_of_results_achieved}. This is primarily the result of implementing a garbage-in, garbage-out design philosophy. That is to say, if the data fed into a device is poor, the output or result produced by the device is also expected to be poor. With this in mind, a large portion of the design process involved designing the data acquisition system. The design parameters were tightened resulting in more significant margins of error when the design was implemented in hardware. Both the ADCs were linked by their chip-select pins, allowing samples of both the current and voltage signals to coincide. Consequently, no phase correction was needed in the software to compensate for a delay. 
+\subsubsection{Aspects to be improved}
+Although (as mentioned) the device met all the stipulated design requirements, some design decisions can still be improved.
+\par
+Data acquisition accuracy was the main design focus during the design phase. While this resulted in a design which was quite accuracy, little to no attention was given to energy consumption. As a result, the two 9V batteries that power the circuitry had to be replaced frequently. A smaller safety transformer is another design modification that would drastically improve the operating power of the device. The current design uses a transformer rated to output \qty{3}{\ampere}. This results in a constant \qty{5}{\watt} of power being consumed while the device is in operation.
+\par
+The most notable aspect which can be improved upon is the sample errors that occur as a result of interfacing a function coded in C and called from python to read a memory location which is being altered by another program. While the C code and the PRU sampling code are error-free, sample errors can result in the false identification of some loads when integrated into python.
+\par
+The main program that runs all the software could be made to perform identifications and keep track of the energy consumption while the GUI was not open on a web browser.
+
+
+\subsubsection{Design functioning limitations}
+The specific implementation of the detection algorithm based on a random forest algorithm is limited in its current state. The training of the individual trees required a dataset that was comprised of every possible load combination that can be expected. The six unique appliances used in testing resulted in 127 unique combinations of loads. The manual creation of this training set with all those combinations was impractical. It justified the design of supporting hardware to automate this task. While this resulted in an accurate detection algorithm, this method's scalability becomes more complex with the addition of every new unique load. This is a result of all the trees needing to be retrained with every new possible combination in order to maintain the accuracy mentioned in the results. 
+\par
+The physical construction of the device also led to it being more restricted in its functionality than the original design specification, the latter of which called for the device to be able to measure a power draw of \qty{8000}{\watt}. While proof of sufficient ADC headroom is provided in the results section and the device is able to measure said power draw, the physical cables and sockets that allow for the measurements to be made is only rated for a maximum power draw of \qty{3680}{\watt}.   
+
+
+\subsection{Design ergonomics}
+The target market for this device is the general public - in other words, it will be marketed to the average consumer with no technical expertise. For many consumers energy consumption - and, by extension, the cost of that energy in the form of electricity - is an abstract concept. Consumers often leave appliances on unnecessarily due to them not knowing that doing so leads to substantial energy wastage. When used properly, this device can inform the average consumer about their appliances' energy consumption and the associated cost, leading to them cutting down on energy consumption by turning off unnecessary appliances.
+\par
+The data is presented to the user through a dashboard accessible as a web page. This dashboard is designed to simplify the relevant information to make it easily understandable. Gauges with clear colour distinctions (green, orange and red) are used to help users interpret raw values such as voltage, current, power and the power factor. The raw numeric values are thus given meaning and contextualised. While the average consumer may not necessarily have a full understanding of what the values mean, the device will still give them a general indication of how energy can be used more sparingly and in a more cost-effective manner.
+\par 
+Another design choice which was made with the aim of simplifying the information's presentation is that all the respective power draw traces are shown on one graph throughout the day. This graph will thus allow the user to see how much power is consumed, the time of operation, and the duration of the energy consumption. In addition to this graph, a pie-chart showing the numeric proportion of each individual appliance's energy consumption over a period of time is also displayed. The graph and pie-chart are easy to interpret, and will thus inform consumers about which of their appliances are most energy consuming resulting in them using their appliances more efficiently.
+\subsection{Health, safety and environmental impact}
+\subsubsection{Health and Safety}               
+The device is interfacing with the mains electricity supply thus creating a potentially hazardous situation. As such, mandatory safety precautions had to be taken to prevent user injury or death as a result of accidental interaction. The high voltage and high current supply is therefore isolated through the use of an extension cable and plug - the transformer and plug are connected within isolated plastic housing, thereby significantly reducing any risk of injury as a result of exposure to the mains electricity supply.
+\par
+The above-mentioned process of isolation thus means that the only way in which a user could possibly still be exposed to dangerous voltage is through the secondary stage of the safety transformer. According to the research presented in \cite{Fish2009-ce}, a \qty{60}{\hertz} alternating current is potentially lethal at a value of \qty{20}{\mA}. In the same paper, the authors further found that human skin can have varying resistance depending on whether the particular skin has come into contact with water. Resistance ranges from a maximum of \qty{100}{\kohm} when the individual's skin is dry, to a minimum of \qty{1}{\kohm}) when the skin is wet. Applying ohms law to the worst case scenario (i.e., where the user's skin offers the lowest possible resistance to the value of \qty{1}{\kohm}, and is then exposed to the most significant voltage potential of \qty{15}{\volt}), the largest possible current that can be conducted through the skin is \qty{15}{\mA}. This value is close to a lethal amount. However, it must be noted that this is a worst-case scenario as well as a very unlikely one. The user will be warned that the device is never to be exposed to water or operated in wet conditions, thus making it very unlikely that a situation in which they will be exposed to lethal voltage through the secondary stage of the safety transformer will arise. There is thus no inherent risk of energy or death for a user operating the device in accordance with clear instructions.
+\subsubsection{Environmental impact}
+
+As was found by Eskom (South Africa's only public energy provider) in its 2021 integrated report, (and as is indicated by the table in figure~\ref{fig:Eskom_report}), \qty{1.08}{\kilogram} of \ch{CO2} emissions are released per kilowatt hour of energy generated. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Literature_study/Eskom.png}
+    \caption{Table of approximate resource cost per unit of energy adapted from \cite{Eskom-2021}}
+    \label{fig:Eskom_report}
+\end{figure}
+A single tree is estimated to absorb an average of  \qty{20}{\kilogram} of \ch{CO2} emissions per year (\cite{power_tree} and \cite{ecotree}). It is thus arguable that every \qty{18.51}{\kWh} can be counteracted by the planting of a tree. However, the device in itself leads to a reduction in energy consumption as the consumer is made to be more aware of the unnecessary appliances in use in their homes. For example, if a user has accidentally forgotten their pool or underfloor heating on, the device will bring this to their attention leading to them switching it off to save electricity (and money). The global effect is thus a general reduction in the electricity consumption in each home and, consequently, in \ch{CO2} emissions and the burning of fossil fuels. The table above provides further information in this regard, it being argued that the usage of natural resources and harmful emissions will be reduced overall if consumers become more aware about their energy consumption.
+\subsection{Social and legal impact of the design}
+The designed device will need to be registered in accordance with the designs act of ACT195 of 1993. 
+If the device is marketed to general public as it is intended to be it must comply with the consumer protection act 68 of 2008.
+The device must also meet the national environment act of 59 of 2008. This will ensure that the device will not become e-waste rusting in negative impacts to the environment. 
+The device must comply with the IEC/AS 62053-21 which prescribes to the standard of energy meters as the device is designed to meet the requirements to classified as class 2 energy meter. 
+The device must comply with the IEC 60038 which prescribes to the standard preferential values for the nominal voltage of electrical supply systems. Compliance with this standard ensures that the deices is able to measure that voltages in all standard locations.  
+This device if eventually marketed will give consumers another tool with which they are able to reduce their electricity. This will allow consumers to make better more informed decisions on how they consume energy ultimately resulting the reduction in their monthly electricity cost.  
+\newpage
+
+%% End of File.
+
+

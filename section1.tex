@@ -1,0 +1,61 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 1.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Literature study}
+An energy meter is a device used to measure the energy consumption of the active loads on a circuit. Most energy meters provide the total energy used, but do not provide per-load energy consumption. This information can be important to both consumers and energy providers.
+ Consumers are able to better understand how they consume energy. The desired granularity of how the total energy is consumed is only achievable in three ways: first, the actual device can report on its own energy consumption; secondly, an energy meter may be installed for each device; and, finally, Non-Intrusive Load Monitoring (NILM) could be used.
+\par
+Energy providers are able to manage supply and demand more effectively which is necessary for the functionality of any energy grid \cite{Grid_predic}. Using modern prediction algorithms to analyse the granular information regarding how consumers use energy throughout the day can improve the accuracy of electric load forecasting (ELF), thus enabling energy providers to manage (and meet) the energy supply and demand more effectively \cite{7926112}.
+\par
+All electrical loads will produce a rising or falling edge when there is a change to their working state - this is indicated by the arrows pointing upwards or downwards in Figure~\ref{fig:1}. The state between the two transient edges is the steady state \cite{RN38}. Features that define a change to the working state can be defined as transient signatures and steady state signatures \cite{RN34}. In the 1980s, George Hart \cite{RN42} presented a method of load identification which allowed him to distinguish between multiple loads with one energy monitoring device. He pioneered the term Non-Intrusive Load Monitoring (NILM). Hart's method made use of the transients or (in his words) "step changes". 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/Literature_study/Fig1.png}
+    \caption{Examples of load signatures of household appliances as illustrated in \cite{RN42}.}
+    \label{fig:1}
+\end{figure}
+As shown in Figure~\ref{fig:1}, Hart's method is only able to identify loads when a transition event that causes a significant change in the power draw is detected. The method's failure to make use of the steady state to identify loads reduces its effectiveness.
+\par
+Hart's original system was later improved in a number of ways. The first refinement resulted from innovation in data acquisition systems used for energy monitoring which has allowed for smaller changes in power to be measured at an increased sample rate. Most modern off-the-shelf energy monitoring systems make use of analogue-to-digital converters (ADCs) that have a resolution exceeding 10-bits \cite{RN48}. This is one of the most notable improvements. The increase in ADC resolution enables an energy monitor to measure a change in power exceeding \qty{11.23}{\watt}, with some energy monitors being able to measure a change as low as \qty{0.17}{\watt}. 
+\par
+Another improvement to the data acquisition systems was an increase in the sample rate - this has resulted in more harmonic information to identify unique loads \cite{RN52}. In order to distinguish between 20 - 40 loads, a sample rate of between 10 – 40 kHz is required \cite{RN52}. This allows for the identification of small power draw loads that would not have been detectable using Hart's original method.
+\par
+Saleh makes a case in favour of using specialised mathematical transforms for transient feature extraction - such as the Huang Hilbert Transform (HHT) with Ensemble Empirical Mode Decomposition (EEMD) (\cite{RN53}). While the author persuasively argues that this is an accurate and effective method of feature extraction, he does not expand much on the practical implementation of his method.
+\par
+The steady state can be disaggregated into many features that are unique to the particular state of a load. Some of the most common features include power variation, and time and current harmonics. These steady state features are currently being researched and tested \cite{8895360}.
+One of the most notable features that has recently been studied is the V-I trajectory feature. 
+\par
+V-I trajectory allows for the clustering of similar load signatures in feature space. This is accomplished by projecting the instantaneous voltage and current signals to an XY-cartesian plane over one complete cycle. In Figure~\ref{fig:2}, some loads from the Controlled ON-OFF Loads Library (COOLL) are mapped in this way. The figure shows that every load's projection is distinct. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figures/Literature_study/VI_Projection.png}
+    \caption{Examples of load projection from the COOLL data set as illustrated in \cite{8895360}.}
+    \label{fig:2}
+\end{figure}
+Mulinari \emph{et al} integrated the features that came about as a result of the new feature extraction techniques into three existing detection algorithms (Ensemble, kNN and SVM) (\cite{8895360}). They recorded that the accuracy of the detection methods could vary from between \qty{70}{\%} and \qty{99.64}{\%} when identifying the loads contained in the COOLL dataset. The most significant result was that - even though all the features (existing and new) were combined by the detection algorithm - the accuracy of the prediction never fell below \qty{96.35}{\%}.     
+\par
+The detection methods used by Mulinari \emph{et al} (\cite{8895360}) are not the only algorithms that have been used in NILMs.
+ Methods which use Hidden Markov models are still actively being researched. Two papers using Hidden Markov models were recently published in 2015 and 2018 \cite{RN38,RN40}. The Hidden Markov model (the original method used by Hart) uses statistical predictions to identify the current state of a load \cite{RN42}. As was the case in the original work of Hart, the results presented by Zhihao \emph{et al} \cite{RN38} and Jung \emph{et al} \cite{RN40} also only pertained to loads that caused significant power draw changes when a change in operation occurred. The research did not make any predictions or comment on the effectiveness of the device in a situation where it was used with loads which cause nominal power changes. 
+ The effectiveness of the device is given in Bit-Error-Rate (BER). However, the authors do not provide any insight as to how to relate the BER to allow for a comparison to be drawn with the other methods discussed in the literature. The usefulness of these results as a benchmark against which other methods can be compared is therefore limited.
+ \par
+ The research of Zhihao \emph{et al}, \cite{RN38} and Jung \emph{et al}, \cite{RN40} was focused solely on theoretical application and only tested in simulations. Mubarok \emph{et al}, \cite{RN47} conducted similar research with the focus being on practical implementation. Their aim was to develop an algorithm that was simple to implement on an embedded processing platform. 
+ Mubarok \emph{et al} implemented a method referred to as the radial basis function - this method is used to derive an unknown function from a set of inputs and known outputs. The authors use the FFT of the current signal as the input to the radial basis function. Once the function has been derived, it is implemented on the STM32F407VGT6 embedded platform. 
+ The implemented radial basis function was able to identify the loads with an error margin of merely \qty{0.14}{\%} to \qty{4.84}{\%}. These results demonstrated that the practical radial basis function was able to detect loads accurately in most instances with an error rate that was commendably low. These findings were limited as the function needs to be trained for every possible combination comprised of the unique loads, and these combinations increase exponentially. In other words, if the number of unique loads was doubled, the resulting number of combinations would be 256. The radial basis function is an approximation function which uses a large number of linear matrix operations in order to make a prediction. Consequently, it has the disadvantage of being slowed down by the number of combinations due to the complexity cost being between $O(n^{2})$ and $O(n^{3})$ (with n being the number of samples).
+ \par
+A recent paper published in 2020 by Guohua \emph{et al} \cite{RN39} may provide a solution for this problem. They propose using a random forest algorithm - an algorithm which is commonly used to overcome classification and regression problems in a machine learning context. Unlike the radial basis function, the decision tree only makes use of a number of checks - no mathematical operations are performed when it makes its prediction. Here the complexity cost is $O(n log (n))$. This is substantially lower than that of the radial basis function.
+Unfortunately, this method resulted in a slight decrease in accuracy. Using the same number of loads as Mubarok \emph{et al} as well as the large power loads used in \cite{8895360,RN38,RN40}, the resulting largest measured error margin was \qty{14}{\%} \cite{RN47}. 
+As with the research done by Mubarok \emph{et al}, the use of a random forest algorithm in NILM has also only been simulated, its practical implementation not yet having been tested \cite{RN47}.
+\par
+Non-Intrusive Load Monitoring has seen significant improvement since Hart's original design in the 1980s \cite{RN42}. Most of these improvements and related innovations occurred within the last 10 years due to renewed interest in the field of energy consumption. There are two areas of focus where researchers improved the NILM design.
+Firstly, the features used for identification and the detection methods used were improved upon. Mulinari \emph{et al} \cite{8895360} showed that by implementing new identification features into existing detection methods, the accuracy of these methods can be significantly improved. Furthermore, it was discovered that combining new features with new or improved detection methods also resulted in improved accuracy \cite{RN39,RN38,RN40,RN47}. 
+Most of the newly developed algorithms' results were obtained via simulations and not through practical implementation, as previously mentioned. The exception to this was the work of Mubarok \emph{et al}, \cite{RN47}, who successfully implemented a NILM on an embedded platform. However, it was discussed that the method used was limited as the complexity and time needed to perform an identification increases exponentially with the number of loads.  
+On the other hand, Guohua \emph{et al}, \cite{RN39} demonstrated that a NILM using a random forest algorithm can produce similar levels of accuracy as that of the method used by Mubarok \emph{et al} \cite{RN47}. The advantage of the random forest algorithm was that it needed significantly less time to compute, the time taken scaling with $O(nlog_{n})$ as opposed to $O(n^{2})$.
+\par
+Upon reviewing the relevant literature, it can be concluded that the work of Mubarok \emph{et al} \cite{RN47} (where the method's functionality was only demonstrated through simulations) may be improved upon by using the methods of Guohua \emph{et al} \cite{RN39} for practical implementation purposes. This can be done by implementing a decision tree on an embedded platform. It is proposed that these improvements will result in the accuracy of the prediction method increasing to \qty{95}{\%}. 
+
+%% End of File.
+
+

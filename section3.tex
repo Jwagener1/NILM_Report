@@ -1,0 +1,1682 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 3.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Design and implementation}
+
+\subsection{Design summary}
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Deliverable or task} &
+  \textbf{Implementation} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Completion of deliverable\\ or task, and section in the \\ report\end{tabular}} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Design of mains voltage interface\\ and attenuation circuit \end{tabular} & \begin{tabular}[c]{@{}l@{}}The student completed the design\\ from first principles\end{tabular} & \begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:D_V}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Design of mains current interface\\ and attenuation circuit \end{tabular} & \begin{tabular}[c]{@{}l@{}}The student completed the design\\ from first principles\end{tabular} & \begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:D_I}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Design of differential ADC input driver\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}The student completed the design\\ from first principles\end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:D_ADC}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Design of \qty{\pm 2.5}{\volt} reference \end{tabular}                    & \begin{tabular}[c]{@{}l@{}}The student completed the design\\ from first principles\end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:D_ref}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Hardware design and  \\ implementation voltage interface \end{tabular}    & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented \\ the hardware  design  on \\ veroboard from first principles \end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:H_V}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Hardware design and   \\ implementation current interface \end{tabular}   & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented \\ the hardware  design  on \\ veroboard from first principles\end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:H_I}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Hardware design and   \\implementation ADC input driver\end{tabular}      & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented \\ the hardware  design  on \\ veroboard from first principles\end{tabular} & 
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:H_ADC}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Hardware design and \\implementation \qty{\pm 2.5}{\volt} reference \end{tabular} & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented \\ the hardware  design  on \\ veroboard from first principles\end{tabular} & 
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:H_V_Ref}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}PRU ADC Interface Software\end{tabular}  & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented a custom version of \\ the SPI protocol from first principles to \\ interface the ADC and PRU  \end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:PRU}~and~\ref{sec:Sample} \end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Digital FIR Filter Design\end{tabular}  & \begin{tabular}[c]{@{}l@{}l@{}}The student designed the filter from first principles \\ The implementation was done using a library \end{tabular} & 
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:Filter}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Development of the data collection\\ system\end{tabular}  & \begin{tabular}[c]{@{}l@{}l@{}l@{}}The student designed and implemented a custom \\ automated data collection system from first principles.\\The GUI used to control the system \\ was implemented using a library\end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:DC}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Development of the decision tree \end{tabular}  & \begin{tabular}[c]{@{}l@{}l@{}}The student implemented a custom version of \\ the SPI protocol from first principles to \\ interface the ADC and PRU  \end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:DT}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Training of the decision tree \\ and creation of the forest \end{tabular} & \begin{tabular}[c]{@{}l@{}l@{}l@{}l@{}}The student implemented a decision tree \\algorithm from first principles with the particular \\ implementation of the decision \\ tree forest being completely original \end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:deply_DT}\end{tabular} \\ \hline
+
+\begin{tabular}[c]{@{}l@{}}Full system integration \\ GUI development \end{tabular} & \begin{tabular}[c]{@{}l@{}l@{}l@{}l@{}l@{}l@{}} The system was fully integrated as a Dash Application.\\The GUI components provided by Dash are taken off the self. \\ All the functions that generate the information \\that GUI displays are designed and \\integrated using first principles\end{tabular} &
+\begin{tabular}[c]{@{}l@{}}Complete\\ Section~\ref{sec:Full}\end{tabular} \\ \hline
+
+\end{tabular}%
+}
+\caption{Design summary.}
+\label{tab:Design_summary}
+\end{table}
+\newpage
+\subsection{Theoretical analysis}
+
+\subsubsection{ADC Sample rate and resolution requirements}
+\label{sec:D_V}
+All ADCs have three main specifications: the voltage range they can measure, the number of bits they can use (resolution) to represent that voltage, and the speed (sample rate) at which the conversion takes place. The accuracy of the measurement is affected by all three these specifications. 
+The effective number of bits (ENOB) is the measure of how much resolution an ADC will have in a particular system, this being dependant on all three of the above specifications. Increasing the ENOB measure also increases accuracy and allows smaller signals to be measured. However, this increase comes at a trade off for every bit increase to ENOB. The design complexity increases exponentially. 
+\par
+The following calculations were used to determine the minimum ENOB required for the voltage signal. The specification for household voltage supplied in South Africa is \qty{\pm 230}{\volt} \qty{\pm 10}{\percent}, meaning that the range over which the samples needed to be taken can be calculated by equations\ref{eq:1}~and~\ref{eq:2}
+\begin{equation}
+\label{eq:1}
+\begin{split}
+    V_{min} &= 230 \;V \times (100-10 \%) \;\;\\
+            &= 230 \;V \times (90 \%) \;\;\\
+            &= 207 \; V \; ,
+\end{split}
+\end{equation}
+\begin{equation}
+\label{eq:2}
+\begin{split}
+    V_{max} &= 230 \;V \times (100+10 \%) \;\;\\
+            &= 230 \;V \times (110 \%) \;\;\\
+            &= 253 \; V \; .
+\end{split}
+\end{equation}
+The root-mean-square (RMS) Voltage was used to calculate the values above. The definition of effective or RMS value that was provided in \cite{alexander_o._2021} is that the effective value of a periodic current is the DC current that delivers the same average power to a resistor as the periodic current. Using the RMS value would result in a design that cannot measure the AC voltage waveform over the desired range as this is not the peak-to-peak voltage of the signal. The actual peak-to-peak values of the voltage signal were derived using the equations presented below:
+    \begin{equation}
+    \label{eq:3}
+    \begin{split}
+    V(max)_{pk-pk} &= [V_{max} - (V_{min})] \times \sqrt{2} \;\;\\
+              &= [253 \; V - (-253 \; V)] \times \sqrt{2} \;\;\\
+              &= 715,59 \; V \; ,
+    \end{split}
+    \end{equation}
+
+    \begin{equation}
+    \label{eq:4}
+    \begin{split}
+    V(min)_{pk-pk} &= [V_{max} - (V_{min})] \times \sqrt{2} \;\;\\
+              &= [207 \; V - (-207 \; V)] \times \sqrt{2} \;\;\\
+              &= 585.48 \; V \; .
+    \end{split}
+    \end{equation}
+Figure~\ref{fig:Volt_sim} is a mathematical simulation of a \qty{50}{\hertz} sine wave with the largest possible amplitude the system was expected to measure. Indicated in the figure are the $V_{rms}$ and $V_{max}$ values - the $V_{max}$ value is noticeably larger than $V_{rms}$ value.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/RMS/Vrms.png}
+    \caption{Mathematical simulation of expected voltage signal.}
+    \label{fig:Volt_sim}
+\end{figure}
+A design error of \qty{1.0}{\percent} was chosen for the voltage measurement in order to prevent the desired error of the power measurement from exceeding \qty{\pm 2.5}{\percent}. This allows for a \qty{\pm 1.5}{\percent} error in the rest of the system. Equation~\ref{eq:5} below was used to convert the \qty{1.0}{\percent} error to a voltage value in relation to the smallest expected peak-to-peak voltage signal 
+\begin{equation}
+\label{eq:5}
+\begin{split}
+    \Delta V &= 1\% \times V(min)_{pk-pk} \; V \\
+             &= 1\% \times  585.48\; V \\
+             &= 5.85 \; V .
+\end{split}
+\end{equation}
+
+Using the result from equation~\ref{eq:5}, the number of quantisation levels required to express the maximum peak-to-peak voltage while maintaining the design error was calculated using equation~\ref{eq:6},
+\begin{equation}
+\label{eq:6}
+\begin{split}
+    Levels  &= \frac{V(max)_{pk-pk}}{\Delta V} \\
+            &= \frac{715.59}{5.85} \\
+            &= 122.22\\
+            &\approx 123.
+\end{split}
+\end{equation}
+Using the number of quantisation levels from equation~\ref{eq:6} , the minimum ENOB were obtained using equation~\ref{eq:7},
+\begin{equation}
+\label{eq:7}
+\begin{split}
+    ENOB    &= log_{2}(Levels) \\
+            &= log_{2}(123) \\
+            &= 6.93\\
+            &\approx 7\; bits.
+\end{split}
+\end{equation}
+Therefore, only a 7-bit ADC is required to sample the voltage signal while maintaining an error of less than \qty{\pm 1.0}{\percent}.
+\par
+A similar process was followed to calculate the ENOB required to represent the current signal as the process used for sampling the voltage signal. The load's current draw is dependant on its voltage and power rating. This means that both the voltage and power draw values must be accounted for when calculating the range of current values needing to be measured.
+\par
+Equation~\ref{eq:8} and equation~\ref{eq:9} are used to calculate the minimum and maximum current values that the system is expected to be able to measure,
+\begin{equation}
+\label{eq:8}
+\begin{split}
+    P_{min_{rms}}                   &= V_{max_{rms}} \cdot I_{min_{rms}} \\
+    2 \; W \;                       &= 253 \; V \; \cdot I_{min_{rms}} \\
+    \therefore \; I_{min_{rms}}     &= \frac{2 \; W \;}{253 \; V} \\
+                                    &= 7.9051 \; mA \; ,\\
+\end{split}
+\end{equation}
+
+\begin{equation}
+\label{eq:9}
+\begin{split}
+    P_{max_{rms}}                   &= V_{min_{rms}} \cdot I_{max_{rms}} \\
+    8000 \; W \;                    &= 207 \; V \; \cdot I_{max_{rms}} \\
+    \therefore \; I_{max_{rms}}     &= \frac{8000 \; W \;}{207 \; V} \\
+                                    &= 38.647 \; A.\\
+\end{split}
+\end{equation}
+
+
+The Figure~\ref{fig:Current_Sim} depicts two current signals. The left Figure~\ref{fig:Current_Sim_a} is the smallest possible signal that the system is expected to measure. The right Figure~\ref{fig:Current_Sim_b} is the largest possible signal that the system is expected to measure.
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/RMS/Irms_min.png}
+        \caption{The smallest current signal.}
+        \label{fig:Current_Sim_a}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/RMS/Irms_max.png}
+        \caption{The largest current signal.}
+        \label{fig:Current_Sim_b}
+     \end{subfigure}
+        \caption{The smallest and largest current signals that are expected to be measured.}
+        \label{fig:Current_Sim}
+\end{figure}
+
+The data in Figure~\ref{fig:Current_Sim_a} shows that the smallest possible current value is \qty{11.18}{\mA}. The largest possible value is \qty{54.656}{\ampere}. However, unlike the voltage, this accuracy value only applies to loads that draw over \qty{1.2}{\ampere}. Thus, in order to maintain a measurement error of less than \qty{\pm 2.5}{\percent}, a design error of \qty{\pm 1.0}{\percent} is expected - the value of which is calculated by equation~\ref{eq:10},
+
+\begin{equation}
+\label{eq:10}
+\begin{split}
+    \Delta I &= 1\% \times 1.2 \times \sqrt{2} \; A\\
+             &= 1\% \times  3.39\; A \\
+             &= 33.94 \; mA .
+\end{split}
+\end{equation}
+
+Since the above calculated value of \qty{33.94}{\mA} is larger than \qty{11.18}{\mA} calculated in equation~\ref{eq:11} above, the ENOB can be calculated, as in
+
+\begin{equation}
+\label{eq:11}
+\begin{split}
+    Levels  &= \frac{I(max)_{pk-pk}}{I(min)} \\
+            &= \frac{109.31}{11.18 \; mA} \\
+            &= 9777.28\\
+            &\approx 9778.
+\end{split}
+\end{equation}
+
+Using the number of levels calculated by equation~\ref{eq:11} above, this can then be expressed as ENOB using equation~\ref{eq:12},
+\begin{equation}
+\label{eq:12}
+\begin{split}
+    ENOB    &= log_{2}(Levels) \\
+            &= log_{2}(9778) \\
+            &= 13.26\\
+            &\approx 14\; bits.
+\end{split}
+\end{equation}
+
+Comparing the results from equations~\ref{eq:7}~and~\ref{eq:12}, it is clear that an ADC which matches or exceeds 14 bits is required. As most ADCs do not come with a resolution of 14 bits, a 16-bit ADC is selected.
+\par
+The sample rate of the ADC was selected to exceed that of \qty{49}{\kHz}. This is because the main features required for detecting loads are the harmonics a device will create while in operation. The harmonics will be calculated using an FFT transform on the current signal. Only the odd harmonics are used. With a sample rate of \qty{49}{\kHz}, this implies that the FFT transform will have a frequency range of
+\qty{24.5}{\kHz}. Since only the odd harmonics are used for load identification, a total of 245 harmonics can be used to fingerprint loads. Following the above criteria, the MCP33131D-10 from Microchip was selected based on the specifications summarised in Table~\ref{tab:ADC_Summary} below: 
+\begin{table}[H]
+\small
+\centering
+\begin{tabular}{|ccc|}
+\hline
+\multicolumn{3}{|c|}{MCP33131D-10}                 \\ \hline
+\multicolumn{1}{|c|}{Parameter}                     & \multicolumn{1}{c|}{Minimum requirement}  & Actual                            \\ \hline
+\multicolumn{1}{|c|}{Sample Rate}                   & \multicolumn{1}{c|}{\qty{ \pm 49}{\kHz}}  & \qty{\pm 1}{\MHz}                 \\ \hline
+\multicolumn{1}{|c|}{Resolution}                    & \multicolumn{1}{c|}{14-bits}              & 16-bits                           \\ \hline
+\multicolumn{1}{|c|}{Input Range}   & \multicolumn{1}{c|}{\qty{\pm 5.0}{\volt}}                 & \qty{\pm 5.1}{\volt}              \\ \hline
+\end{tabular}%
+\caption{Summary of the ADC specifications that are required to meet the needs of the application \cite{Microchip:MCP33131D}.
+}
+\label{tab:ADC_Summary}
+\end{table}
+Since the ADC is a precision 16-bit ADC, it requires an external voltage reference that maintains the same level of accuracy. Therefore, the MAX6250 (a precision \qty{5.0}{\volt}) was selected as the external voltage reference. This is because the voltage reference has a very low noise level of \qty{\pm 1.5}{\uV} peak-to-peak - this being far below the ADC's quantisation error.
+
+\subsubsection{Mains Voltage Signal Isolation and Interface}
+\label{sec:Mains_Voltage_Signal_Isolation_and_Interface}
+There are many known methods for measuring a live voltage signal using a microcontroller. These include using a shunt resistor in series to create a voltage drop that is low enough for the ADC to measure. However, it offers little to no protection for the device and the user. One way of mitigating this is to create a voltage drop using multiple resistors in series. Implementing this design can isolate the device and user in the event that a resistor fails.
+However, this is still not a perfect solution as it results in the addition of multiple points of failure.
+\par
+There are two methods which may be used to mitigate this potential danger by completely isolating the system from the potentially dangerous live voltage supply. 
+The first method uses an optocoupler to completely isolate the live supply from the device performing the voltage measurement. The device makes use of a LED with a brightness output which is proportional to the supplied voltage. A photodiode is then used to convert this light to a voltage signal, the signal being dependent on the brightness of the LED. One of advantage of this method is that there is no interference with the actual voltage supply. However, the disadvantage is that there is no linear output proportional to the voltage input, there thus needing to be a calibration step in software or hardware to produce this linear output.
+\par
+The Figure~\ref{fig:V_interface} below shows a second alternative method via which to isolate and step down the dangerous voltage level using a safety transformer. 
+\begin{figure}[H]
+
+  \begin{center}
+    \begin{circuitikz}
+        \ctikzset{resistors/scale=0.7, capacitors/scale=0.6}
+        \draw (0,0) -- ++(0,4) node[above](Live){$Neutral$} ++(0,0) ++(0,-1) to[short, *-] (2,3)
+        (2,0) -- ++(0,4) node[above](Neutral){$Live$} ++(0,0) ++(0,-1)
+        (2,3) node[transformer, circuitikz/inductors/coils=7,anchor=A1](T){}
+        (T.A2) to[short, -*] (T.A2)
+        (T.B2) node[ground](GND){} ++(0,-1) 
+        (T.B1) to [R=$R_1$] ++(2,0) -- ++(0.5,0)
+        node[op amp, anchor=-](OA1){\texttt{OA1}}
+        (OA1.-) ++(-0.5,0) -- ++(0,1.5) -- ++(0.5,0)
+        to[R=$R_2$] ++(2,0) coordinate(FB) 
+        (OA1.out) |- (FB)
+        (OA1.out) -- ++(1,0) node [right] {$V_{out}$}
+        (OA1.+) -| ++(-0.5,-1.1) node[ground](GND){} ++(0,0)
+      ;
+    \end{circuitikz}
+    \caption{Voltage interface circuit.}
+    \label{fig:V_interface}
+  \end{center}
+\end{figure}
+ The safety transformer depicted in the circuit above is rated to transform a \qty{230}{\volt} down to \qty{12}{\volt}. As such, the max peak-to-peak voltage is \qty{37.34}{\volt}. Since the voltage is still too high for the specified ADC(MCP33131D-10) even after implementing the safety transformer, the voltage must be transformed to a range of \qty{\pm 2.5}{\volt}. This transformation is affected using a voltage amplifier comprised of an operational amplifier and two resistors, the amplification factor being governed by equation~\ref{eq:13}
+\begin{equation}
+\label{eq:13}
+    V_{out} = V_{in} \cdot \frac{R_{2}}{R_{1}} \;, 
+\end{equation}
+respectfully \cite{design_with}.
+
+Substituting $V_{in} =$\qty{37.34}{\volt}, $V_{out} =$ \qty{2.5}{\volt} and selecting a value of \qty{10}{\kohm} for $R_{1}$, results in a value of \qty{1250}{\ohm} for $R_{2}$.
+
+\subsubsection{Mains Current Signal Isolation and Interface}
+\label{sec:D_I}
+As mentioned in the section above, there are many ways in which to sample a live \qty{230}{\volt} current signal. One method is to insert a shunt resistor between the current supply and the load on the live voltage wire. By measuring the voltage over the shunt resistor (which has a precise resistance value that is known), the current flowing to the load can be calculated using ohms law. However, this method has the potential to place the device and its user in danger should the resistor fail.
+\par
+A safer solution is to use a current clamp, a transformer which typically has a split core and can wrap around the live wire. A current is produced through the wire by placing the core around it. This current can then be converted into a voltage using a resistor. However, not all current clamps are necessarily equally suited to perform this function. Current clamps can vary in three distinct ways:
+\begin{itemize}
+    \item First, the number of windings between the primary coil and the secondary coil may vary. This number is directly responsible for the range of currents which the transformer is rated to measure at its specified accuracy level. 
+    \item Secondly, the magnitude of the burden resistor may differ, this having a direct impact on the linear region and accuracy of the current signal produced by the transformer. 
+    \item Finally, the accuracy class of the current clamps may vary - this accuracy being determined by the maximum rated error that occurs in the linear measurement region of the current clamp.
+\end{itemize}
+
+Having taken all of the above factors as well as the desired accuracy specified in the design requirements into account, the ATO-75-B1I-D10 current clamp from LEM was selected as most suitable for the design. The Table~\ref{tab:CC_Summary} below is a summary of requirements that the ATO-75-B1I-D10 met or exceeded resulting in it being selected as most suitable for this particular application.
+
+\begin{table}[H]
+\small
+\centering
+\begin{tabular}{|ccc|}
+\hline
+\multicolumn{3}{|c|}{ATO-75-B1I-D10 with $R_{br} = $ \qty{4}{\ohm}}                 \\ \hline
+\multicolumn{1}{|c|}{Parameter} & \multicolumn{1}{c|}{Minimum requirement} & Actual \\ \hline
+\multicolumn{1}{|c|}{Primary current ($I_{p}$)}           & \multicolumn{1}{c|}{\qty{ \pm 75}{\ampere}}  & \qty{\pm 125}{\ampere}                              \\ \hline
+\multicolumn{1}{|c|}{Rated primary current ($I_{pr}$)}    & \multicolumn{1}{c|}{\qty{ \pm 75}{\ampere}}  & \qty{\pm 75}{\ampere}                               \\ \hline
+\multicolumn{1}{|c|}{Frequency bandwidth (\qty{-3}{\dB})} & \multicolumn{1}{c|}{\qty{49}{\kHz}}          & \qty{500}{\kHz}                                     \\ \hline
+\multicolumn{1}{|c|}{Ratio error ($\varepsilon$)}         & \multicolumn{1}{c|}{\qty{\pm 2}{\percent}}   & \qty{\pm 1.0}{\percent}                             \\ \hline
+\multicolumn{1}{|c|}{Linearity error ($\varepsilon_{L}$)}  & \multicolumn{1}{c|}{\qty{\pm 0.5}{\percent}} & \qty{\pm 0.1}{\percent}                             \\ \hline
+\multicolumn{1}{|c|}{Rated secondary Current ($I_{sr}$)}  & \multicolumn{1}{c|}{NA}                      & \qty{\pm 75}{\mA}                                   \\ \hline
+\multicolumn{1}{|c|}{Rated transformation ratio ($K_{ra}$)}          & \multicolumn{1}{c|}{NA}                      & \qty[per-mode = symbol]{1000}{\ampere \per \ampere} \\ \hline
+\end{tabular}%
+\caption{Summary of the specifications that are required to meet the needs of the application \cite{LEM:ATO-75-B1I-D10}.
+}
+\label{tab:CC_Summary}
+\end{table}
+
+ 
+The circuit diagram in Figure~\ref{fig:I_interface} below depicts the current clamp and the burden resistor which create a voltage signal proportional to the current flowing through the live supply wire.
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}
+        \ctikzset{resistors/scale=0.7, capacitors/scale=0.6}
+        \draw (0,0) -- ++(0,4) node[above](Live){$Neutral$} ++(0,0)
+        (2,0) -- ++(0,4) node[above](Neutral){$Live$} ++(0,0) ++(0,-1)
+        to[iloop2, name=I] ++(0,-2)
+        (I.i-) |- ++(1,-2) coordinate(R) 
+        (I.i+) ++(1,0) to [R=$R_{br}$] (R)
+        (R) ++(-0.5,0) node[ground](GND){} ++(0,-0.5)
+        (I.i+) -- ++(1.5,0)
+        node[op amp, anchor=+](OA1){\texttt{OA1}}
+        (OA1.-) |- ++(3,1) |- (OA1.out) -- ++(1,0) 
+        to [R=$R_1$] ++(2,0) -- ++(1.0,0)
+        node[op amp, anchor=-](OA2){\texttt{OA2}}
+        (OA2.-) ++(-0.5,0) -- ++(0,1.5) -- ++(0.5,0)
+        to[R=$R_2$] ++(2,0) coordinate(FB) 
+        (OA2.out) |- (FB)
+        (OA2.out) -- ++(1,0) node [right] {$V_{out}$}
+        (OA2.+) -| ++(-0.5,-1.1) node[ground](GND){} ++(0,0);
+    \end{circuitikz}
+    \caption{Current interface circuit.}
+    \label{fig:I_interface}
+  \end{center}
+\end{figure}
+With the burden resistor $R_{br} = $ \qty{4}{\ohm}, the ATO-75-B1I-D10 current clamp indicated in the circuit schematic presented in Figure~\ref{fig:I_interface} is rated to achieve the error values stated in Table~\ref{tab:CC_Summary} above. This resistor is nominal compared to the others used in the circuit. As such, the voltage signal produced over $R_{br}$ is susceptible to loading, which could make the amplification of the signal all but impossible. 
+A buffer amplifier was placed between the burden resistor and the amplification circuit in order to mitigate the loading of the signal. The signal is then amplified using a voltage amplifier comprised of an operational amplifier and two resistors, with the amplification factor being governed by the equation~\ref{eq:14}
+\begin{equation}
+\label{eq:14}
+    V_{out} = V_{in} \cdot \frac{R_{2}}{R_{1}} , 
+\end{equation}
+respectfully \cite{design_with}.
+Where $V_{in}$ is defined by equation~\ref{eq:15}
+\begin{equation}
+\label{eq:15}
+    V_{in_{max}} = I_{sr} \cdot 4 \Omega \;. 
+\end{equation}
+Substituting $I_{sr} =$\qty{106.07}{\mA} into equation~\ref{eq:15} above yields, $V_{in_{max}} =$ \qty{424.26}{\mV}.With $V_{out_{max}} = \frac{V_{ref}}{2} =$~\qty{2.5}{\volt}. Selecting a value of \qty{32}{\ohm} for $R_{1}$, results in a value of \qty{826}{\ohm} for $R_{2}$.
+
+\subsubsection{Differential ADC input driver}
+\label{sec:D_ADC}
+The differential ADC works by sampling the difference between two signals. Thus, the original signal needs to be converted to a differential signal in order to make use of the full 16-bit range of the MCP33131D-10 ADC. It is imperative to note that, while the data sheet of the MCP33131D-10 states that it can measure $\pm {V_{ref}}$, this specification is somewhat ambiguous and potentially misleading. The specification actually refers to the difference between the "positive" and "negative" inputs to the ADC - not to the inputs themselves. The ADC is also only designed to have a positive voltage applied to both inputs. Thus, the original signal needs to be modified  to use the ADC's entire range. 
+\par
+The before-mentioned modification was done by designing a differential ADC driver (depicted in Figure~\ref{fig:ADC_Driver}) to modify the signal. The purpose of the differential ADC driver is to take a signal and apply $-\frac{V_{ref}}{2}$ offset - after which the modified signal is then inverted using an inverting unity gain amplifier. Offsets are applied to ensure that the signal is positive and in the expected range for the ADC. An offset of $\frac{V_{ref}}{2}$ is thus also applied to the original signal using a normal unity gain amplifier. 
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}
+        \ctikzset{resistors/scale=0.7, capacitors/scale=0.6}
+        \draw (0,0) ++(0,2) node[left](V_25){$+2.5\;V$} ++(0,0) -- ++(1,0)
+        to [R=$R_1$] ++(2,0) ++(0,-0.5) -- ++(2,0)
+        node[op amp, anchor=-](OA1){\texttt{OA1}}
+        (OA1.+) -| ++(-0.5,-0.5) node[ground](GND){} ++(0,0)
+        (OA1.-) ++(-0.5,0) -- ++(0,1.5) -- ++(0.5,0)
+        to[R=$R_5$] ++(2,0) coordinate(FB) 
+        (OA1.out) |- (FB)
+        (OA1.out) -- ++(1,0)
+        node[op amp, anchor=+](OA2){\texttt{OA2}}
+        (OA2.out) -| ++(0,1.5) -| (OA2.-)
+        (OA2.out) to[R=$R_8$] ++(1.2,0) -- ++(0.7,0) node[right](V_+){$V-_{out}$} ++(0,0) 
+        ++(-0.7,0) -- ++(0,-0.2) to[C=$C_1$] ++(0,-0.8)
+        node[ground](GND){} ++(0,0)
+
+        (0,0) node[left](V_in){$V_{in}$} ++(0,0) -- ++(1,0)
+        -| ++(0,1) to [R=$R_2$] ++(2,0) -- ++(0,1)
+        
+        (0,0) -- ++(1,0)
+        -| ++(0,-1) to [R=$R_3$] ++(2,0) -- ++(0,-1)
+        
+        (0,0) ++(0,-2) node[left](V_25){$-2.5\;V$} ++(0,0) -- ++(+1,0)
+        to [R=$R_4$] ++(+2,0) ++(0,+0.5) -- ++(2,0)
+        node[op amp, noinv input up, anchor=+](OA3){\texttt{OA3}}
+        (OA3.-) -- ++(-0.5,0) -- ++(0,-1) coordinate(FB) 
+        (FB) -- ++(0,-0.25) to [R=$R_6$] ++(0,-1.2)
+        to node[ground](GND){} ++(0,0)
+        (OA3.out) -- ++(0,-1.5)
+        to [R=$R_7$] (FB)
+        (OA3.out) -- ++(1,0)
+        node[op amp, anchor=+](OA4){\texttt{OA4}}
+        (OA4.out) -| ++(0,1.5) -| (OA4.-)
+        (OA4.out) to[R=$R_9$] ++(1.2,0) -- ++(0.7,0) node[right](V_+){$V+_{out}$} ++(0,0) 
+         ++(-0.7,0) -- ++(0,-0.2) to[C=$C_2$] ++(0,-0.8)
+        node[ground](GND){} ++(0,0)
+        ;
+    \end{circuitikz}
+    \caption{Differential ADC input driver.}
+    \label{fig:ADC_Driver}
+  \end{center}
+\end{figure}
+The Figure~\ref{fig:ADC_Driver} above depicts a circuit schematic that was designed. The non-inverting unity gain amplifier is comprised of an operational amplifier (OA1) and resistors $R_{1}$,$R_{2}$ and $R_{3}$. The inverting unity gain amplifier is comprised of an operational amplifier (OA2) and resistors $R_{4}$,$R_{5}$ and $R_{6}$. Since this ADC driver is comprised of unity gain amplifiers thus the resistors $R_{1}$ through  $R_{6}$ are all ideally the same value of \qty{10}{\kohm}. The differential signals are then buffered by the operational amplifiers (OA3 and OA4) to prevent loading. This signal is then run though a passive first order anti aliasing RC filter who's cut off frequency is defined by the following equation~\ref{eq:16}
+\begin{equation}
+    f_{c}   = \frac{1}{2 \pi R C},
+    \label{eq:16}
+\end{equation}
+respectfully \cite{design_with}.
+With a  desired cutoff frequency of \qty{20}{\kHz} the \qty{2.2}{\nF} capacitors  were specified $C_{1}$ and $C_{2}$. The resistors $R_{8}$ and $R_{9}$ were then calculated to have a value of  \qty{3617}{\ohm} using equation~\ref{eq:16}. Since \qty{3617}{\ohm} is not a standard resistor value a resistor value of  \qty{3300}{\ohm} was selected. Equation~\ref{eq:16} was then use again to calculate the as design new cut off frequency of \qty{21.9}{\kHz}. 
+
+
+\subsubsection{Voltage Reference}
+\label{sec:D_ref}
+The Figure~\ref{fig:ADC_Driver} depicted above is the differential ADC driver. On the left, the design requires both a positive and negative \qty{\pm 2.5}{\volt} references to offset the signals. Since this design is used for both voltage and current signals, two of each reference are required.
+\par
+In order to create these four references, buffers are used instead of creating a duplicate of the left side of the circuit depicted below in Figure~\ref{fig:Vref_circuit}.
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}
+        \ctikzset{resistors/scale=0.7, capacitors/scale=0.6,diodes/scale=0.6}
+        \draw (0,0) node[ground](GND){} ++(0,0)
+        to [zzD*, l=$LM385Z$] ++(0,6)
+        to [R=$R_{s}$] ++ (0,2)
+        node[vcc](vcc){$9V$} ++(0,0)
+        (0,0) -- ++(2,0) 
+        node[op amp,noinv input up, anchor=-](OA1){\texttt{OA1}}
+        (OA1.+) -| ++(-0.5,1) coordinate(C1)
+        to [R=$R_{1}$] ++(0,3.5) coordinate(C2)
+        (OA1.out) -| ++(0,1.5) coordinate(C3) 
+        (C1) to [R=$R_{2}$] (C3)
+        (C2) -- ++(-1.5,0)
+        (C2) -- ++(3.88,0) coordinate(C4)
+        (OA1.out) -- ++(1,0) coordinate(C5)
+        
+        
+        (C4) -- ++(0,1.2)
+        node[op amp, anchor=+](OA2){\texttt{OA2}}
+        (OA2.out) -| ++(0,1.5) -| (OA2.-)
+        (C4) -- ++(0,0)
+        node[op amp, noinv input up, anchor=+](OA3){\texttt{OA3}}
+        (OA3.out) -| ++(0,-1.5) -| (OA3.-)
+        
+        
+        (C5) -- ++(0,0)
+        node[op amp, anchor=+](OA4){\texttt{OA4}}
+        (OA4.out) -| ++(0,1.5) -| (OA4.-)
+        (C5) -- ++(0,-1.2)
+        node[op amp, noinv input up, anchor=+](OA5){\texttt{OA5}}
+        (OA5.out) -| ++(0,-1.5) -| (OA5.-)
+        
+        (OA2.out) to [short, -o] ++(1,0) node [right] {$2.5V$}
+        (OA3.out) to [short, -o] ++(1,0) node [right] {$2.5V$}
+        (OA4.out) to [short, -o] ++(1,0) node [right] {$-2.5V$}
+        (OA5.out) to [short, -o] ++(1,0) node [right] {$-2.5V$}
+        ;
+    \end{circuitikz}reference
+    \caption{\qty{\pm 2.5}{\volt} reference used as the offset for the circuit in Figure~\ref{fig:ADC_Driver}.}
+    \label{fig:Vref_circuit}
+  \end{center}
+\end{figure}
+
+As one can see from the circuit depicted above makes use of the LM385Z \qty{2.5}{\volt} precision
+voltage reference from Texas Instruments. This particular voltage reference creates a controlled
+voltage drop over the diode that is controlled by the current that follows through the resistor
+$R_{s}$. The value of $R_{s}$ is defined by the equation~\ref{eq:17}
+\begin{equation}
+\begin{split}
+    R_{s}   &= \frac{V_{s} - V_{ref}}{I_{L} + I_{ref}} \;,\\ 
+            &= \frac{9 \; V - 2.5 \; V}{2.0 \; mA} \;,\\
+            &= 3300 \; \Omega \;,\\
+\end{split}
+\label{eq:17}
+\end{equation}
+respectfully \cite{TI:LM385Z}.
+
+In order to prevent the large current draw and thus affect the stable \qty{2.5}{\volt} at the base
+of $R_{s}$, significant resistance is required for $R_{1}$. The voltage produced at the base of
+$R_{s}$ is then inverted using an inverting amplifier comprised of the operational amplifier (OA1),
+$R_{1}$ and $R_{2}$. The purpose of the inverting amplifier is not to alter the magnitude of the
+voltage but rather create a negative voltage of the same magnitude $R_{1}$ = $R_{2}$. Since this is an amplifier design the general rule of keeping the resistors below \qty{100}{\kohm} was followed and a resistance value of \qty{47}{\kohm} is selected for resistors $R_{1}$ and $R_{2}$.
+
+\subsection{Simulation}
+
+The simulations depicted in this section of the report were all performed on the SPICE simulation software known as LTspice. The raw file outputs were then imported into python to produce the figures you see in section below. Since the intended application of this circuit is power measurement and feature extraction the choice of operational amplifier choice has little impact on the performance of operation. What was considered was the packaging of the operational amplifier. The differential ADC diver makes use of four operational amplifiers. Using the LM324 from Texas Instruments which comes as a quad packaged operational amplifier integrated circuit (IC) greatly simplifies the hardware design and implementation described in section~\ref{sec:Hardware_imp}.  
+
+\subsubsection{Mains Voltage Signal Sampling}
+
+The circuit diagram in Figure~\ref{fig:LT_Diagram_V} is the complete circuit diagram used to simulate the voltage sampling circuit. The circuit is the combination of circuits depicted in Figures~\ref{fig:V_interface}~and~\ref{fig:ADC_Driver}. A mutual inductor is used to simulate the safety transformer. The simulation is performed twice with the input voltage varied to simulate the maximum and minimum voltages that can be expected when implemented in a practical application.   
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/LT_Spice/LT_Spice_V.png}
+    \caption{Complete voltage interface circuit with differential ADC driver.}
+    \label{fig:LT_Diagram_V}
+\end{figure}
+
+The sub figures depicted in Figure~\ref{fig:V_driver_simulation} are used to confirm that the design voltage interface circuit is able to convert the large voltage signal from the mains supply to voltage range that is able to leverage the full 16-bit resolution of the ADC.    
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/V_out_max.png}
+        \caption{Positive and negative outputs of the voltage interface circuit with the maximum expected input.}
+        \label{fig:V_out_max}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/V_out_max_Diff.png}
+        \caption{Difference of outputs seen in Figure~\ref{fig:V_out_max}.}
+        \label{fig:V_diff_max}
+    \end{subfigure}
+    \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/V_out_min.png}
+        \caption{Positive and negative outputs of the voltage interface circuit with the minimum expected input.}
+        \label{fig:V_out_min}
+    \end{subfigure}
+    \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/V_out_min_Diff.png}
+        \caption{Difference of outputs seen in Figure~\ref{fig:V_out_min}.}
+        \label{fig:V_diff_min}
+    \end{subfigure}
+    \caption{Simulation of the voltage response of the circuits in Figure~\ref{fig:LT_Diagram_V}}
+    \label{fig:V_driver_simulation}
+\end{figure}
+
+\subsubsection{Mains Current Signal Sampling}
+
+The circuit diagram in Figure~\ref{fig:LT_Diagram_I} is the complete circuit diagram used to simulate the current sampling circuit. The circuit is the combination of circuits depicted in Figures~\ref{fig:I_interface}~and~\ref{fig:ADC_Driver}. A current source is used to simulate the current created by the ATO-75-B1I-D10 current clamp. The simulation is performed twice with the input current varied to simulate the maximum and minimum currents that can be expected when implemented in a practical application.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figures/LT_Spice/LT_Spice_I.png}
+    \caption{Complete current interface circuit with differential ADC driver}
+    \label{fig:LT_Diagram_I}
+\end{figure}
+
+The sub figures depicted in Figure~\ref{fig:I_driver_simulation} are used to confirm that the design current interface circuit is able to leverage the full 16-bit resolution of the ADC over the full range of expected current draws from devices in a practical application.
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/I_out_max.png}
+        \caption{Positive and negative outputs of the current interface circuit with the maximum expected input.}
+        \label{fig:I_out_max}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/I_out_max_Diff.png}
+        \caption{Difference of outputs seen in Figure~\ref{fig:I_out_max}.}
+        \label{fig:I_diff_max}
+    \end{subfigure}
+    \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/I_out_min.png}
+        \caption{Positive and negative outputs of the current interface circuit with the minimum expected input.}
+        \label{fig:I_out_min}
+    \end{subfigure}
+    \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/LT_Spice/I_out_min_Diff.png}
+        \caption{Difference of outputs seen in Figure~\ref{fig:I_out_min}.}
+        \label{fig:I_diff_min}
+    \end{subfigure}
+    \caption{Simulation of the voltage response of the circuit in Figure~\ref{fig:I_interface}}
+    \label{fig:I_driver_simulation}
+\end{figure}
+
+The simulations of both the complete voltage and current circuits were done with ideal resistors. While this is easily corrected by making a use of a potentiometer for the amplification stages of both circuits in Figures~\ref{fig:V_interface}~and~\ref{fig:I_interface} respectfully. This method is no simple to implement for circuit depicted in Figure~\ref{fig:ADC_Driver}.
+\par
+In order to mitigate the effects of the non-ideal components in the ADC driver circuit the results Monte Carlo simulation Figure~\ref{fig:Hist_ADC_Driver} that swept the resistors values with their specified ranges. As can be seen with all the resistors having a specified tolerance of \qty{1}{\percent} the mean offset error between the positive and negative values is \qty{140}{\mV}. While this does not seem like a large value converting it to the number of ADC steps (1835) that will be lost as result it has a meaningful impact on the range of values. 
+\subsubsection{Differential ADC input driver}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figures/Histograms/V_diff.png}
+    \caption{Histogram depicting the expected offset error}
+    \label{fig:Hist_ADC_Driver}
+\end{figure}
+
+\subsection{Hardware design and implementation}
+\label{sec:Hardware_imp}
+As the device is in the prototyping phase a modular design principle is followed. The advantage of using the modular design is that it subdivides the system into smaller subsystems. These smaller subsystems are then transformed into modules. The modules are independently created, modified and replaced as needed.
+\par 
+The general method to transform a circuit schematic to a physical hardware design is described in the following steps:
+\begin{itemize}
+    \item [Step 1:] The component symbols used to represent individual components in the circuit schematic must be converted to their equivalent physical package dimensions and pin-outs. 
+    \item [Step 2:] The packages must then be arranged and the routing for the connections planned on a blank schematic of the prototyping board.
+    \item [Step 3:] Make the necessary modifications (if any) due to any physical layout compatibility or routing issues and update the schematic from step 2.
+    \item [Step 4:] Place the physical components on the board and check for any compatibility or routing issues.
+    \item [Step 5:] Solder components in place.
+    \item [Step 6:] Test the circuit to ensure that all connections are correct and that the circuit performs according to the simulation.
+\end{itemize}
+\subsubsection{Mains Voltage Signal System}
+\label{sec:H_V}
+
+Following the general steps 1 through 3 described above the
+Figure~\ref{fig:V_hardware_Implementation} is created from the circuit
+schematic in Figure~\ref{fig:V_interface}. Since the circuit is
+comprised of non-ideal components, a potentiometer is used to replace the
+resistor $R_{1}$ in Figure~\ref{fig:V_interface}. Making this
+modification allows for a calibration that compensates for the
+tolerances found in non-ideal components.
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Voltage.png}
+        \caption{Protoboard design for the voltage interface circuit}
+        \label{fig:V_hardware_Design}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Pic_Voltage.png}
+        \caption{Protoboard implementation for the voltage interface circuit}
+        \label{fig:V_hardware_Implementation}
+     \end{subfigure}
+        \caption{Hardware design and implementation of the voltage interface module}
+        \label{fig:V_hardware_Comparison}
+\end{figure}
+\subsubsection{Mains Current Signal System}
+\label{sec:H_I}
+Following the general steps 1 through 3 described above, the
+Figure~\ref{fig:I_hardware_Implementation} is created from the circuit
+schematic in Figure~\ref{fig:I_interface}. As with the voltage interface circuit, the current interface circuit is comprised of non-ideal components. Using the same design choice to replace resistor $R_{1}$ in  Figure~\ref{fig:I_interface} with a potentiometer allows for the calibration to compensate for the non-ideal components. 
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Current.png}
+        \caption{Protoboard design for the current interface circuit}
+        \label{fig:I_hardware_Design}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Pic_Current.png}
+        \caption{Protoboard implementation for the current interface circuit}
+        \label{fig:I_hardware_Implementation}
+     \end{subfigure}
+        \caption{Hardware design and implementation of the current interface module}
+        \label{fig:I_hardware_Comparison}
+\end{figure}
+
+\subsubsection{Differential ADC input driver}
+\label{sec:H_ADC}
+
+Following the general steps 1 through 3 described above the Figure~\ref{fig:ADC_hardware_Implementation} is created from the circuit schematic in Figure~\ref{fig:ADC_Driver}. 
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/ADC_Driver.png}
+        \caption{Protoboard design of the ADC driver circuit \newline}
+        \label{fig:ADC_hardware_Design}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Pic_ADC_Driver.png}
+        \caption{Protoboard implementation for the ADC driver circuit}
+        \label{fig:ADC_hardware_Implementation}
+     \end{subfigure}
+        \caption{Hardware design and implementation of the ADC driver module}
+        \label{fig:ADC_hardware_Comparison}
+\end{figure}
+In the previous two cases  variations in component values were compensated for by using a potentiometer - however, this is an impractical method for the circuit depicted in figure~\ref{fig:ADC_hardware_Comparison}.
+The resistors in the circuit have been specified as having a tolerance of no greater than \qty{\pm 1}{\ percent}. This variance in the resistance still results in a large variance in the offset error between the two signals, as seen in Figure~\ref{fig:Hist_ADC_Driver}. In order to mitigate this error a "real world" adaptation of the  Monte Carlo simulation used to produce Figure~\ref{fig:Hist_ADC_Driver}. 100 \qty{10}{\kohm} \qty{\pm 1}{\percent} is used as the batch size. Using the same circuit presented in Figure~\ref{fig:V_interface} with the voltage source replaced with the  MAX6250 precision voltage reference used for the 16-bit ADC. $R_{2}$ is then replaced randomly and sorted by the voltage gain measured at the output. Resistors that produced the same voltage were grouped together and then used to reduce variance in the voltage offset.
+\subsubsection{Voltage Reference}
+\label{sec:H_V_Ref}
+
+The \qty{2.5}{\volt} reference circuit used to create the circuit depicted~\ref{fig:Vref_circuit} in Figure~\ref{fig:REF_hardware_Design} was constructed using the same method as was used above. 
+It may be observed that the additional LM324 quad operational amplifier package that is seen in the Figure~\ref{fig:REF_hardware_Implementation} has been omitted. However, this operational amplifier package is only used to buffer the positive and negative references, thus its omission is of minor importance.  
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Volt_Ref.png}
+         \caption{Protoboard design for the voltage reference circuit}
+        \label{fig:REF_hardware_Design}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Pic_Volt_Ref.png}
+        \caption{Protoboard implementation for the voltage reference circuit}
+        \label{fig:REF_hardware_Implementation}
+     \end{subfigure}
+        \caption{Comparison between the design and hardware implementation of the voltage reference circuit}
+        \label{fig:REF_hardware_Comparison}
+\end{figure}
+
+\subsubsection{Full system integration}
+
+The circuit board layout depicted in Figure~\ref{fig:FUll_hardware_Design} serves as the base or motherboard to which all the modules connect and interface with one another. The design splits the voltage and current sampling subsystems at the top and bottom, respectfully. This results in a clean layout and no interference between the two independent signals. This division of the signals produces the physical layout seen in Figure~\ref{fig:FULL_hardware_Implementation} - the split is distinct. It can also be observed that the design requires two of the ADC driver modules depicted in Figure~\ref{fig:ADC_hardware_Comparison}. This is because the voltage and current signals have separate independent ADCs.
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Full_Layout.png}
+        \caption{Protoboard design for modular interface of all the above components}
+        \label{fig:FUll_hardware_Design}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/PCB_Design/Pic_Full_Layout.png}
+        \caption{Protoboard implementation for modular interface of all the above components}
+        \label{fig:FULL_hardware_Implementation}
+     \end{subfigure}
+        \caption{Comparison between the design and hardware implementation of the modular interface of all the above components}
+        \label{fig:Full_hardware_Comparison}
+\end{figure}
+
+To confirm the that the voltage and current interfaces are working as designed the the outputs of both circuits were captured using an oscilloscope. The results of which can be seen in Figure~\ref{fig:Full_hardware_Scope}. For both the positive and negative traces ('green','blue') the DC offset was removed for illustration purposes but the offset is not removed from the difference between the two signals ('red'). Clearly depicted in the figures there is a negligible DC offset that comes as a result of differences between the positive and negative outputs from the differential ADC.    
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Scope/I_scope.png}
+        \caption{Result of the current interface circuit when implemented in hardware}
+        \label{fig:Current_Signal_Scope}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Scope/V_scope.png}
+        \caption{Result of the voltage interface circuit when implemented in hardware}
+        \label{fig:Voltage_Signal_Scope}
+     \end{subfigure}
+        \caption{Current and voltage signals captured on an oscilloscope.}
+        \label{fig:Full_hardware_Scope}
+\end{figure}
+
+
+\subsection{Software design}
+All the software designed below is intended to be deployed on the Beaglebone AI which is based on the AM5729 Sitara processor from Texas Instruments. 
+
+\subsubsection{PRU ADC Interface}
+\label{sec:PRU}
+The pseudocode below outlines the steps need for the implementation of a bit banging program that is used to trigger a sample on both ADCs simultaneously using the Serial Peripheral Interface (SPI) protocol. The code below is also responsible for transferring the result from both ADCs to a 32-bit shared memory location that can be accessed by other programs using the address of the shared memory.  
+\par
+The need for a custom implementation of the SPI protocol is two-fold. Firstly, the ADC makes use of a non-standard chip select function to trigger a conversion. Secondly, the standard library implementations of the SPI protocol to not offer the data transmission speed or the ability to receive data from two salve SPI devices simultaneously.
+\par 
+The PRU-core on the Beaglebone runs independently of all other systems and has low level control of the Beaglebone pins.This allows for  the ADC to perform sampling independently from the programs running on the Beaglebone. The advantage of this implementation is that the sample rate is kept consistent regardless of the processing load. 
+\begin{algorithm}[H]
+\caption{PRU ADC SPI Sample Loop}
+\label{alg:Pru_Sample}
+\begin{algorithmic}
+\While{Infinite Loop}
+\State  SPI chip select is set 'high'
+\State  Reset temp1
+\State  The upper 16-bits of temp 1 result of ADC2 copied from the temp variable
+\State  The lower 16-bits of temp 1 result of ADC1 copied from the temp variable
+\State  Delay of \qty{10}{\us}
+\State  SPI chip select is set 'low'
+\State  Delay of \qty{10}{\us}
+\State  Temp1 is copied to the shared memory address 
+\State  Delay of \qty{10}{\us}
+\State  Reset temp
+\For{16-bits of ADC2 and ADC1}
+\State SPI clock is set 'high'
+\State Delay of \qty{10}{\us}
+\State SPI clock is set 'low'
+\State Delay of \qty{10}{\us}
+\State The nth samples from the ADCs are appended to temp
+\State Delay of \qty{10}{\us}
+\EndFor
+\State  Delay of \qty{10}{\us}
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+The operations below describe the sequence of commands that need to be issued over the SPI protocol to issue a re-calibrate command. 
+\begin{algorithm}[H]
+\caption{PRU ADC SPI Calibration Protocol}
+\label{alg:Pru_Cal}
+\begin{algorithmic}
+\State  Reset i
+\For{$i < 1024$}
+\State SPI clock is set 'high'
+\State Delay of \qty{10}{\us}
+\State SPI clock is set 'low'
+\State Delay of \qty{10}{\us}
+\State  Increment i by 1 
+\EndFor
+\State Delay of \qty{10}{\us}
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+\subsubsection{Sampling Subroutine and Data processing}
+\label{sec:Sample}
+
+
+\begin{algorithm}[H]
+\caption{2's Complement to double array}
+\label{alg:Sample}
+\begin{algorithmic}
+\Require Memory address of 32-bit ADC result
+\Function{C-Sample}{Shared Memory Address ,number of samples, voltage,current}
+\State i = 0
+\While{i < number of samples}
+    \If{Previous result $\neq$ Current result}
+        \State Previous result $=$ Current result
+        \For{Voltage}
+            \State Convert two's compliment binary to decimal 
+            \State Convert Decimal to floating point in range \qty{-5}{\volt} to \qty{5}{\volt} 
+            \State Place result in array
+        \EndFor
+        \For{Current}
+            \State Convert two's compliment binary to decimal 
+            \State Convert Decimal to floating point in range \qty{-5}{\volt} to \qty{5}{\volt} 
+            \State Place result in array
+        \EndFor
+        \State i = i + 1
+    \EndIf
+\EndWhile
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Digital Filter}
+\label{sec:Filter}
+The Table~\ref{tab:FIR_Table} below is a summary of the most popular FIR window filter design functions.
+\begin{table}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Filter_Response/FIR_Table.png}
+    \caption{Table of common FIR Windowing methods and their performance/design metrics adapted from \cite{arar_2016}.}
+    \label{tab:FIR_Table}
+\end{table}
+
+\begin{itemize}
+    \item Filter Type = Low Pass 
+    \item $F_{Sample}$ = \qty{49}{\kHz} 
+    \item $F_{Pass}$   = \qty{20}{\kHz} 
+    \item $F_{Stop}$   = \qty{21}{\kHz} 
+\end{itemize}
+Since the  anti-aliasing filter (AAF) does not require an aggressive stopband attenuation factor, a Hanning window is selected. As a result, fewer taps will
+be required, thereby reducing the computation overhead required to process the filter.
+\par
+In order to calculate the filter order required to implement the specified Hanning window FIR filter, the Lobe width is defined as the difference between the stopband and passband, as in equation~\ref{eq:18}
+\begin{equation}
+    Lobe \; Width = (F_{Stop} - F_{Pass}) \; .
+    \label{eq:18}
+\end{equation}
+Where filter order is defined as M, and using the table in Figure~\ref{tab:FIR_Table} above, the following equation is derived:
+\begin{equation}
+    (F_{Stop} - F_{Pass}) = \frac{8 \cdot F_{sample}}{M},
+    \label{eq:19}
+\end{equation}
+Substituting the desired values for the passband and stopband frequencies into equation~\ref{eq:19} above, M is found to have a value of 392. This high filter order comes at a trade off in that it adds a delay to the signal and adding processing overhead. 
+\par
+Since the intended deployment of this filter is on an embedded device where processing power is limited (execution time being of major concern) a more conservative order of 151 is selected. Implementing the low pass AA-filter with the reduced number of taps for this particular application has had a negligible effect on the filter's frequency response, as is shown in Figure~\ref{fig:FIR_AA}. The designed filter with the calculated number of taps 'red' and the implemented filter with reduced number of taps 'blue' are both functionally identical to the ideal filter response 'green'.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Filter_Response/AA_HZ_response.png}
+    \caption{Frequency response of the designed AAF}
+    \label{fig:FIR_AA}
+\end{figure}
+
+\begin{itemize}
+    \item Filter Type = Low Pass 
+    \item Sampling Frequency = \qty{49}{\kHz} 
+    \item Passband = \qty{50}{\hertz} 
+    \item Stopband = \qty{100}{\hertz} 
+\end{itemize}
+Since the sample rate is exceptionally high relative to the cut-off frequency, the Blackman window type is selected for \qty{50}{\hertz} filter using the table above as this has the most significant stopband attenuation of all the above filters. The process followed to calculate the filter order required is almost exactly the same as with the AAF, the only difference being that equation~\ref{eq:19} is modified with the new passband and stopband values as well as the new formula for the lobe width. Thus, equation~\ref{eq:20} below is derived
+\begin{equation}
+    (F_{Stop} - F_{Pass}) = \frac{12 \cdot F_{sample}}{M},
+    \label{eq:20}
+\end{equation}
+Substituting the desired values for the passband and stopband frequencies into equation~\ref{eq:20} above results in M having a value of 5820. When simulating the frequency response of the designed filter 'blue', and the same filter with an order of 582 'red', with that of the ideal response in Figure~\ref{fig:50HZ_Response_zoom}, the filter with more taps has a much better frequency response. However, the computation costs far exceed the benefits, especially when comparing it to a filter that requires one tenth that cost. The reason the lower order filter is just as effective in this case is because the intended application is the accurate measurement of real power.   
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Filter_Response/50_HZ_response.png}
+        \caption{Response over the intended operating frequency range}
+        \label{fig:50HZ_Response}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Filter_Response/50_HZ_response_zoom.png}
+        \caption{Zoomed in response centred about the cutoff frequency}
+        \label{fig:50HZ_Response_zoom}
+    \end{subfigure}
+    \caption{Frequency response of the designed low pass 50 Hz FIR filter}
+    \label{fig:FIR_50}
+\end{figure}
+
+The pseudocode below summarises the functions that are performed on the raw sampled data that was produced by algorithm~\ref{alg:Sample}. The signal is first calibrated and scaled from the \qty{\pm 5}{\volt} to the original signal's respective value. The sampled signal is then passed through the AA-Filter designed in section~\ref{sec:Filter}. The DC-offset is also removed from the signal that results from the Differential ADC input driver design. The signal is then windowed to have 3-consistent periods over which the rest of the signal processing can be performed. The reason only 3-consistent samples were deemed sufficient and not the entire signal is that the latency between when the signal changed and the device reflecting the change is \qty{1}{\second}. Thus, the small amount of time by which the signal is delayed will have a negligible effort on the accuracy of the power and energy measurements.  
+\begin{algorithm}[H]
+\caption{Data pre-processing}
+\label{alg:Pre_Process}
+\begin{algorithmic}
+\State Scale the \qty{\pm 5}{\volt} to the actual voltage signal value  
+\State Scale the \qty{\pm 5}{\volt} to the actual current signal value
+\State Apply AA-Filter to voltage signal  
+\State Apply AA-Filter to current signal
+\State Voltage signal = Voltage signal - mean [Voltage signal]  
+\State Current signal = Current signal - mean [Current signal]
+\State Window Voltage signal to 3 periods 
+\State Window Current signal to 3 periods 
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Power Calculations}
+
+One of the most important features to extract for appliance classification is the amount of apparent and real power consumed, these being calculated as follows
+\begin{equation}
+    Instantaneous \; Power  = p(t) = v(t) \cdot i(t) ,
+    \label{eq:21}
+\end{equation}
+
+\begin{equation}
+    Average \; Power  = P = \frac{1}{T} \int_{0}^{T} p(t) dt ,
+    \label{eq:22}
+\end{equation}
+
+\begin{equation}
+    X_{rms}  = \sqrt{\frac{1}{T} \int_{0}^{T} x^{2} dt },
+    \label{eq:23}
+\end{equation}
+
+\begin{equation}
+    Apparent \; Power = S = V_{rms} \cdot I_{rms} ,
+    \label{eq:24}
+\end{equation}
+respectively \cite{alexander_o._2021}.
+
+The algorithms~\ref{alg:P_inst}~-~\ref{alg:P_app} are the psudocode that explain the process that is needed to implement the above equations in any programming language. As presented in the algorithms, the continuous signals are first made discrete to the sample based equivalent formula.
+\begin{algorithm}[H]
+\caption{Instantaneous Power Calculation}
+\label{alg:P_inst}
+\begin{algorithmic}
+\Function{Inst\_Power}{$V$, $I$}
+    \State Calculate the instant power: $P_{inst} = V \cdot I$
+    \State Apply 50Hz filter: $P_{inst}$
+    \State \Return $P_{inst}$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Real Power Calculation}
+\label{alg:P_real}
+\begin{algorithmic}
+\Function{Real\_Power}{$P_{inst}$}
+    \State Find sum of the instant power: $S_{P} = \sum_{i=0}^{n} P_{inst_{n}} $ 
+    \State Find the mean of the sum : $\overline {S_{P}}$
+    \State $P = \overline {S_{P}}$
+    \State \Return Real Power :$P$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\caption{RMS - Root mean square calculation}
+\label{alg:RMS}
+\begin{algorithmic}
+\Function{RMS}{$x$}
+    \State Square the input array: $x^{2} = x \cdot x$
+    \State Find sum of the squared input array: $S_{x^{2}} = \sum_{i=0}^{n} x^{2} $ 
+    \State Find the mean of the sum : $\overline {S_{x^{2}}}$
+    \State Calculate the square-root value of the mean: $RMS = \sqrt{\overline {S_{x^{2}}}}$
+    \State \Return $RMS$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{Apparent Power Calculation}
+\label{alg:P_app}
+\begin{algorithmic}
+\Function{Apparent\_Power}{$V_{rms},I_{rms}$}
+    \State $S = V_{rms} \cdot I_{rms}$
+    \State \Return Apparent Power :$S$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\subsubsection{Data Collection}
+\label{sec:DC}
+
+The pseucode below describes the automatic data collector's function to be the collection of the data required to train the decision trees used to create the random forest. The code makes use of an external 8-way relay module connected to an Arduino mega. The Arduino mega is loaded with a simple program that converts an 8-bit serial value to relay commands. The serial commands are issued by the Beaglebone AI through a USB to serial interface. The entire program is an amalgamation of all the functions that are controlled by a dash application.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.6\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize,thick]
+
+
+
+%Start of dash application
+\node[draw,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block1) 
+    {Start Dash Application};
+ 
+%Loop joining co-ordinate   
+\node[coordinate,below=0.5cm of block1] (block2) {};
+
+% 1 second interval check 
+\node[draw,
+    diamond,
+    below= of block2,
+    minimum width=2.5cm,
+    inner sep=0] (block3) {\qty{1}{\second} elapsed};
+    
+% Arrow to interval check 
+\draw[-latex] (block1) edge (block3);
+
+%No text node
+\node[left=0.75cm of block3,fill=white,inner sep=0] (block4) {No};
+
+% Interval check -- No 
+\draw (block3) -- (block4);
+
+%Web-Display Update
+\node[draw,
+    left=of block4,
+    minimum width=2.5cm,
+    minimum height=1cm] (block5) {Update Web-Figures};
+%Arrow from "No" to Web update block
+\draw[-latex] (block4) edge (block5);
+
+\node[coordinate,left=1cm of block5] (block_Web) {};
+\draw[-latex] (block5) edge (block_Web);
+
+
+
+%No text node
+\node[right=0.75cm of block3,fill=white,inner sep=0] (block6) {Yes};
+% Interval check -- Yes 
+\draw (block3) -- (block6);
+
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    right=of block6,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block7) {Sample $I_{n} , V_{n}$ \\ \emph{Algorithm~\ref{alg:Sample}}};
+\draw[-latex] (block6) edge (block7);
+
+    
+ % Data Data pre-processing
+\node[draw,
+    align=center,
+    below=0.4cm of block7,
+    minimum width=2.5cm,
+    minimum height=1cm] (block8) {Data pre-processing \\ \emph{Algorithm~\ref{alg:Pre_Process}}};
+\draw[-latex] (block7) edge (block8); 
+
+   
+% Power Calculations
+\node[draw,
+    align=center,
+    below=0.4cm of block8,
+    minimum width=2.5cm,
+    minimum height=1cm] (block9) 
+    {Power Calculations \\ 
+    \emph{Algorithm~\ref{alg:RMS}} \\
+    \emph{Algorithm~\ref{alg:P_inst}} \\
+    \emph{Algorithm~\ref{alg:P_real}} \\
+    \emph{Algorithm~\ref{alg:P_app}} \\
+    };
+\draw[-latex] (block8) edge (block9);
+
+%Calculate FFT   
+\node[draw,
+    align=center,
+    below=0.4cm of block9,
+    minimum width=2.5cm,
+    minimum height=1cm] (block10) {FFT (I)};
+\draw[-latex] (block9) edge (block10);
+
+
+% Load Check 
+\node[draw,
+    diamond,
+    below=0.4cm of block3,
+    minimum width=2.5cm,
+    inner sep=0] (block11) {State = 'Idle'};
+\node[coordinate,right=1.0cm of block11] (block12) {};
+% Arrow to interval check
+\draw (block10) -| (block12);
+\draw[-latex] (block12) -- (block11);
+
+
+\node[left=0.75cm of block11,fill=white,inner sep=0] (block11_1) {Yes};
+\draw (block11) -- (block11_1);
+\draw[-latex] (block11_1) -| (block_Web);
+\node[below=0.5cm of block11,fill=white,inner sep=0] (block11_2) {No};
+\draw (block11) -- (block11_2);
+% Load Check 
+\node[draw,
+    diamond,
+    below=0.4cm of block11_2,
+    minimum width=2.5cm,
+    inner sep=0] (block13) {State = 'Start'};
+%No text node
+\draw[-latex] (block11_2) edge (block13);
+\node[left=0.75cm of block13,fill=white,inner sep=0] (block13_1) {Yes};
+\draw (block13) -- (block13_1);
+\node[below=0.5cm of block13,fill=white,inner sep=0] (block13_2) {No};
+\draw (block13) -- (block13_2);
+\node[draw,
+    align=center,
+    left=of block13_1,
+    minimum width=2.5cm,
+    minimum height=1cm] (block14) 
+    {State = 'Running' \\ 
+     Sample Count = 0 \\
+     Load Count = 0 \\
+    };
+\draw[-latex] (block13_1) edge (block14);
+\draw[-latex] (block14) -| (block_Web);
+
+\node[draw,
+    diamond,
+    below=0.4cm of block13_2,
+    minimum width=2.5cm,
+    inner sep=0] (block14) {State = 'Running'};
+%No text node
+\draw[-latex] (block13_2) edge (block14);
+
+\node[left=0.75cm of block14,fill=white,inner sep=0] (block14_1) {No};
+\draw (block14) -- (block14_1);
+\draw[-latex] (block14_1) -| (block_Web);
+\node[below=0.5cm of block14,fill=white,inner sep=0] (block14_2) {Yes};
+\draw (block14) -- (block14_2);
+
+% Load Check 
+\node[draw,
+    diamond,
+    below=0.4cm of block14_2,
+    minimum width=2.5cm,
+    inner sep=0] (block15) {Sample Count < 5};
+\draw[-latex] (block14_2) edge (block15);
+
+\node[left=0.75cm of block15,fill=white,inner sep=0] (block16) {No};
+\draw (block15) -- (block16);
+\node[right=0.75cm of block15,fill=white,inner sep=0] (block17) {Yes};
+\draw (block15) -- (block17);
+
+\node[draw,
+    diamond,
+    left=of block16,
+    minimum width=2.5cm,
+    inner sep=0] (block18) {1 < Sample Count};
+%No text node
+\draw[-latex] (block16) edge (block18);
+
+
+\node[below=0.75cm of block18,fill=white,inner sep=0] (block19) {Yes};
+\draw (block18) -- (block19);
+\node[left=0.4cm of block18,fill=white,inner sep=0] (block20) {No};
+\draw (block18) -- (block20);
+\draw[-latex] (block20) -| (block_Web);
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=0.4cm of block19,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block21) {Append csv with \\ Power and FFT Values \\ Increment sample count};
+\draw[-latex] (block19) edge (block21);
+\draw[-latex] (block21) -| (block_Web);
+
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    right=0.4cm of block17,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block22) {Increment Load Control \\ Sample Count = 0};
+\draw[-latex] (block17) edge (block22);
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=of block22,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block23) {Transmit Load Control \\ via Serial };
+\draw[-latex] (block22) edge (block23);
+
+\node[coordinate,below=0.75cm of block21] (block24) {};
+\draw (block23) |- (block24);
+\draw[-latex] (block24) -| (block_Web);
+\draw[-latex] (block_Web) |- (block2);
+
+
+\end{tikzpicture}
+}%
+\end{figure}
+
+\subsubsection{Decision Tree Design}
+\label{sec:DT}
+A decision tree is a series of decisions that map the probable outcome of events based on the information presented. The tree is constructed out of a root decision node that connects to other decision nodes. These connections continue until they reach a decision - also known as the leaf or terminal node. A decision tree can be categorical or continuous. Since the application is to categorise an appliance's current state, all the design choices were made for a categorical decision tree. In order to create these decision nodes the tree must be trained. There are a number of algorithms that are used to train decision trees (ID3 , C4.5 C5.0). 
+This process of training is accomplished by fitting the tree to a training set of data for which the classification is already known. This is done by creating decisions that split the training set continuously until the split results in a group that only contains one type of classification data.   
+\par
+There are two measures that are available to measure how good a split is: the Gini index and the Shannon entropy. In \cite{aznar_2020}, Aznar concludes that the two methods perform very similarly, although entropy results in slightly higher accuracy at the cost of it requiring more computation time. Based on his findings it was decided that using entropy (which can be calculated as 
+\begin{equation}
+    H(x) = -\sum_{i=1}^{n} P_{i} log_{2} (P_{i})\;,
+    \label{eq:25}
+\end{equation}
+reflectively \cite{lathi_ding_2009})  would be a better choice for the intended application since accuracy is the most important design criteria. The pseudocode describing the general implementation of the formula~\ref{eq:25} is relatively simple and is only comprised of a few repetitive steps, as seen below 
+\begin{algorithm}[H]
+\caption{Entropy Calculation}
+\begin{algorithmic}
+\State  Calculate the total occurrences
+\State  Calculate the total occurrence of unique categories
+\State  Calculate the probability of each unique categories with regard to the total
+occurrences
+\State Reset the entropy variable $H(x)$
+\For{Every probability value $P_{i}$}
+\State $H(x_{i}) = -(P_{x_{i}} \cdot log_{2} P_{x_{i}})$
+\State $H(x) = H(x) + H(x_{i})$
+\EndFor
+\State \Return The entropy variable $H(x)$
+\end{algorithmic}
+\end{algorithm}
+
+
+The algorithm described the psudocode  presented below are the general steps followed to calculate the information gained per split. 
+\begin{algorithm}[H]
+\caption{Information Gain}
+\begin{algorithmic}
+\Require Threshold value $Threshold$
+\Require Total entropy before the split $T_{entropy}$
+\Require Total number entries in the dataframe $T_{entries}$
+\State Split dataframe by the threshold value into left and right dataframes
+\State Calculate the weighted entropy of the left split
+\State Calculate the weighted entropy of the right split
+\State Sum the two weighted entropies $Sum_{entropy}$
+\State Information gain  = $T_{entropy} - Sum_{entropy}$
+\State \Return information gain
+\end{algorithmic}
+\end{algorithm}
+
+The psudocode below describes the process followed to find the best split from the features provided in the training data. Each feature is extracted and then the average between the two adjacent values ion the feature is calculated. The data is then split and the information gained from the split calculated. This is repeated for every feature until the best split is discovered.  
+
+\begin{algorithm}[H]
+\caption{Best Split}
+\begin{algorithmic}
+\Require Dataframe where column 1 is category the rest are id features
+\State Calculate the total entropy using column 1 $T_{entropy}$
+\State Calculate the total number entries in the dataframe $T_{entries}$
+\For{every id feature}
+\State Sort dataframe in ascending order by id feature
+\State Create a threshold array of averages between two adjacent id features
+\For{every threshold value}
+\State Calculate the information gain for the threshold value
+\EndFor
+\If {max information gain < current information gain}
+\State Store id feature
+\State Store threshold value
+\State Store current information gain
+\EndIf
+\EndFor
+\State \Return id feature,threshold value,max information gain
+\end{algorithmic}
+\end{algorithm}
+
+The psudocode below describes the process of creating and training a decision tree from a data set. The function makes use of recursion to calculate the best splits using the information gained psudocode above. This continues until either the max depth maximum number of decisions is reached or the data has been completely split. The split feature and value are then stored as a python dictionary. This dictionary can later be used to process new data and make load predictions.   
+
+\begin{algorithm}[H]
+\caption{Decision Tree creation and training}
+\begin{algorithmic}
+\Function{Train}{data,max depth,information gained}
+    \If {max depth has not been reached}
+        \State Call the best split function with the current dataframe
+        \If {information gained is larger than the minimum information gain}
+            \State Call the make split function which returns split dataframes
+            \State Create the split question - feature and value 
+            \State Call the TRAIN Function on the split dataframes
+            \If {if the split results in the same number of category's being identified}
+                \State Append only the one question node to Tree
+            \ElsIf{if the split results in different category's being identified}
+                \State Append all question nodes to Tree
+            \EndIf
+        \ElsIf{information gained is smaller than the minimum information gain}
+            \State Return maximum number of category's
+        \EndIf
+    \ElsIf{max depth has been reached}
+        \State Return maximum number of category's
+    \EndIf
+    \State \Return Tree
+\EndFunction 
+\end{algorithmic}
+\end{algorithm}
+
+
+The psudocode below describes the methods used to implement the random forest algorithm used for training of trees used in a random forest algorithm. 
+
+
+\begin{algorithm}[H]
+\caption{Bagging/Bootstrap aggregating}
+\begin{algorithmic}
+\Require Dataframe where column 1 is category the rest are id features
+\State Shuffle the dataframe 
+\State Split the dataframe into a train and test subsets
+\For{number of desired trees in forest}
+\State Create a random with replacement sample that has $70 \%$ of the training sample size
+\State Train the decision tree on the random sample data
+\EndFor
+\State Combine the created trees into a forest the output of which is the majority decision of all the trees in the forest
+\State \Return Majority decision
+\end{algorithmic}
+\label{alg:Bag}
+\end{algorithm}
+
+\subsection{Software implementation}
+
+\subsubsection{Decision Tree Deployment}
+\label{sec:deply_DT}
+
+The function described below is the method used to make identification and append the result to a binary list that can used to display nad verify the accuracy of the detected loads.
+\begin{algorithm}[H]
+\caption{Decision tree forest used for classification of loads}
+\label{alg:deply_DT}
+\begin{algorithmic}
+\Function{Classification}{ID\_Features,Decision\_Trees,Load\_ID}
+\For{number of unique loads}
+\State Call the function presented in Figure~\ref{flow:Decison_tree}
+\State Append the load Load\_ID with the state of the current load
+\State Load\_ID['Load'] = status
+\EndFor
+\State \Return Load\_ID
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+The code described by the flow diagram in Figure~\ref{flow:Decison_tree} is the processed used to make a decision based on the majority vote of all the individual tress results.
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,thick]
+%Start of dash application
+\node[draw,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block1) 
+    {Start};
+    
+\node[draw,
+    align=center,
+    below=of block1,
+    minimum width=2.5cm,
+    minimum height=1cm] (block1_1) {ID Features};
+\draw[-latex] (block1) -- (block1_1); 
+ 
+%Loop joining co-ordinate   
+\node[coordinate,below=1cm of block1_1] (p1) {};
+\node[coordinate,left=5cm of p1] (p2) {};
+\node[coordinate,right=5cm of p1] (p3) {};
+
+\draw(block1_1) -- (p1);
+\draw(p1) -- (p2);
+\draw(p1) -- (p3);
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=of p1,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block2) {Result \\ $Tree_{2}$};
+\draw[-latex] (p1) -- (block2);
+
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=of p2,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block3) {Result \\ $Tree_{1}$};
+\draw[-latex] (p2) -- (block3);
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=of p3,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block4) {Result \\ $Tree_{n}$};
+\draw[-latex] (p3) -- (block4);
+
+\node[draw,
+    align=center,
+    below=of block2,
+    minimum width=2.5cm,
+    minimum height=1cm] (block5) {Get Majority Vote};
+\draw[-latex] (block2) edge (block5);
+\draw[-latex] (block3) |- (block5);
+\draw[-latex] (block4) |- (block5);
+
+\node[draw,
+    align=center,
+    below=of block5,
+    minimum width=2.5cm,
+    minimum height=1cm] (block6) {Return Load State};
+\draw[-latex] (block5) -- (block6);   
+\node[draw,
+    below=of block6,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block7) 
+    {End};    
+\draw[-latex] (block6) -- (block7); 
+\end{tikzpicture}
+\caption{Flow diagram of the describing the implementation random forest algorithm where any number of trees can be added.}
+\label{flow:Decison_tree}
+\end{figure}
+
+
+\subsection{Final system integration and testing}
+\label{sec:Full}
+
+
+The system described by the Figure~\ref{fig:Full_FLow}  is the order of integration of how the individual designed pieces of software are interfaced together to create a full functioning system that is able to measure the energy and identity the loads that currently using said energy.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,thick]
+
+
+
+%Start of dash application
+\node[draw,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block1) 
+    {Start Dash Application};
+ 
+%Loop joining co-ordinate   
+\node[coordinate,below=1cm of block1] (block2) {};
+
+% 1 second interval check 
+\node[draw,
+    diamond,
+    below=of block2,
+    minimum width=2.5cm,
+    inner sep=0] (block3) {\qty{1}{\second} elapsed};
+    
+% Arrow to interval check 
+\draw[-latex] (block1) edge (block3);
+
+%No text node
+\node[left=0.75cm of block3,fill=white,inner sep=0] (block4) {No};
+
+% Interval check -- No 
+\draw (block3) -- (block4);
+
+%Web-Display Update
+\node[draw,
+    left=of block4,
+    minimum width=2.5cm,
+    minimum height=1cm] (block5) {Update Web-Figures};
+%Arrow from "No" to Web update block
+\draw[-latex] (block4) edge (block5);
+
+
+
+%No text node
+\node[right=0.75cm of block3,fill=white,inner sep=0] (block6) {Yes};
+% Interval check -- Yes 
+\draw (block3) -- (block6);
+
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    right=of block6,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block7) {Sample $I_{n} , V_{n}$ \\ \emph{Algorithm~\ref{alg:Sample}}};
+
+\draw[-latex] (block6) edge (block7);
+
+    
+ % Data Data pre-processing
+\node[draw,
+    align=center,
+    below=of block7,
+    minimum width=2.5cm,
+    minimum height=1cm] (block8) {Data pre-processing \\ \emph{Algorithm~\ref{alg:Pre_Process}}};
+\draw[-latex] (block7) edge (block8); 
+
+   
+% Power Calculations
+\node[draw,
+    align=center,
+    below=0.4cm of block8,
+    minimum width=2.5cm,
+    minimum height=1cm] (block9) 
+    {Power Calculations \\ 
+    \emph{Algorithm~\ref{alg:RMS}} \\
+    \emph{Algorithm~\ref{alg:P_inst}} \\
+    \emph{Algorithm~\ref{alg:P_real}} \\
+    \emph{Algorithm~\ref{alg:P_app}} \\
+    };
+\draw[-latex] (block8) edge (block9);
+ 
+%Calculate FFT   
+\node[draw,
+    align=center,
+    below=of block9,
+    minimum width=2.5cm,
+    minimum height=1cm] (block12) {FFT Transform};
+\draw[-latex] (block9) edge (block12); 
+    
+%Classification  
+\node[draw,
+    align=center,
+    below=of block12,
+    minimum width=2.5cm,
+    minimum height=1cm] (block13) {Classification\\ \emph{Algorithm~\ref{alg:deply_DT}}};
+\draw[-latex] (block12) edge (block13); 
+    
+%Energy Calculation  
+\node[draw,
+    align=center,
+    below=of block13,
+    minimum width=2.5cm,
+    minimum height=1cm] (block14) {Energy Calculation};
+\draw[-latex] (block13) edge (block14);
+
+
+\node[coordinate,left=1.5cm of block5] (block15) {};
+
+\draw [-latex](block14) -| (block15);
+\draw [-latex](block15) |- (block2);
+%Loop Back line
+\draw [-latex](block5) -- (block15);
+
+\end{tikzpicture}
+\caption{Full software flow diagram depicting the integration of the sub-process.}
+\label{fig:Full_FLow}
+\end{figure}
+\subsection{Statistical analysis}
+
+
+\subsubsection{Decision Tree Performance}
+As with all software the larger and complex the function the longer the time needed to compute the function. The Figure~\ref{fig:DT_Performance} was used to measure the the accuracy benefit of more tress versus the computation cost. As can be clearly seen the worst combination is having only two tress this is because if there is no consensus the base case is returned. It can also be noted that the computation time increases at a linear rate but the performance gain has diminishing returns the more trees there are.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{Figures/Decision_tree/Mean_Acc_Score.png}
+        \caption{Computation time versus accuracy with the increase of decision trees}
+        \label{fig:DT_Performance}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{Figures/Decision_tree/Bench_Mark_DT.png}
+        \caption{First principles versus library decision tree bench mark}
+        \label{fig:DT_Benchmark}
+    \end{subfigure}
+    \caption{Decision tree performance measurements used in the design}
+    \label{fig:DT_Design_Bench}
+\end{figure}
+
+Using the above information the following process was used to create all the tress and where necessary a random forest algorithm was used:
+\begin{enumerate}
+    \item The main data-set is split and copied into a data-set for every load.
+    \item This data-set was split into a training and evaluation data.
+    \item A decision tree was then trained and evaluated.
+    \item If the tree was below the threshold accuracy of \qty{90}{\percent} the depth was increased. 
+    \item The steps in 3 and 4 are repeated till the accuracy is achieved or the depth is exceed.
+    \item If the depth is exceed algorithm~\ref{alg:Bag} is used to increase the accuracy.
+\end{enumerate}
+
+\newpage
+Following the steps outlined above the Table~\ref{tab:dt_design} below shows the decision tress and random forests that are combined to form the final load detection algorithm.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|cccc|}
+\hline
+\multicolumn{4}{|c|}{Decision tree design metrics}                                        \\ \hline
+\multicolumn{1}{|c|}{Load Namme} & \multicolumn{1}{c|}{Number of features} & \multicolumn{1}{c|}{Depth} & Number of  Trees \\ \hline
+\multicolumn{1}{|c|}{Fan Speed 1} & \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{10} & 3 \\ \hline
+\multicolumn{1}{|c|}{Fan Speed 2} & \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{10} & 3 \\ \hline
+\multicolumn{1}{|c|}{CFL}         & \multicolumn{1}{c|}{10} & \multicolumn{1}{c|}{4}  & 1 \\ \hline
+\multicolumn{1}{|c|}{2W}          & \multicolumn{1}{c|}{25} & \multicolumn{1}{c|}{10} & 3 \\ \hline
+\multicolumn{1}{|c|}{4W}          & \multicolumn{1}{c|}{25} & \multicolumn{1}{c|}{10} & 3 \\ \hline
+\multicolumn{1}{|c|}{Toaster}     & \multicolumn{1}{c|}{30} & \multicolumn{1}{c|}{3}  & 1 \\ \hline
+\multicolumn{1}{|c|}{70W}         & \multicolumn{1}{c|}{20} & \multicolumn{1}{c|}{8}  & 1 \\ \hline
+\multicolumn{1}{|c|}{2 x 70W}     & \multicolumn{1}{c|}{20} & \multicolumn{1}{c|}{8}  & 1 \\ \hline
+\end{tabular}%
+}
+\caption{Decision tree design metric used in the final detection algorithm}
+\label{tab:dt_design}
+\end{table}
+
+
+\newpage
+
+%% End of File.
+

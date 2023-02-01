@@ -1,0 +1,552 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 4.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Results}
+\label{sec:Results}
+
+\subsection{Summary of results achieved}
+
+\begin{table}[h!]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+\multicolumn{1}{|l|}{\textbf{Intended outcome}} & \multicolumn{1}{l|}{\textbf{Actual outcome}} & \textbf{\begin{tabular}[c]{@{}l@{}}	Location in report\end{tabular}} \\ \hline
+\multicolumn{3}{|l|}{\textbf{Core mission requirements and specifications}} 
+\\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}The device must be able to distinguish \\
+                                                between any combination of 5 - 10 household\\
+                                                appliances that can be in operation\\
+                                                simultaneously at unpredictable times,\\
+                                                with a true positive rate (TPR) of 95\%  
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}The system should be able to identify\\ 6 unique loads simultaneously\end{tabular}}  &  
+Section~\ref{sec:Load_ID_test}
+\\ \hline
+
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}} The error in the power measurement \\
+                                                of any combination of the household \\
+                                                appliances that draw between    \\
+                                                $1.2 - 40$ A connected should not   \\
+                                                exceed that of $\pm 2.5 \%$
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}The error of the power measurement\\ was discovered to be \\ no greater than $\pm 1 \%$\end{tabular}}  &  
+Section~\ref{sec:Power_test}
+\\ \hline
+
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Able to measure a voltage in the \\
+                                                range of $230V \; \pm 10 \%$ at 40A\\
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}The system was able to accurately measure \\
+                                               over a voltage range of $207 - 240V$ \\
+                                               The system was never exposed to larger\\
+                                               voltages in the labs\\
+                                               
+                                                \end{tabular}}  &  
+Section~\ref{sec:Voltage_test}
+\\ \hline
+
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}The device must be able to detect a load \\
+                                                that consumes more than 2W of power
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}The system is able to correctly \\
+                                                identify an LED which \\
+                                                is rated to draw 2W
+                                                \end{tabular}}  &  
+Section~\ref{sec:Load_ID_test}
+\\ \hline
+
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}The status of the energy consumption \\
+                                                of any connected load should be updated\\ 
+                                                in under 2 seconds.
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}The system updates all information \\once per second\end{tabular}}  &  
+Section~\ref{sec:Latency_test}
+\\ \hline
+
+
+\multicolumn{3}{|l|}{\textbf{Field condition requirements and specifications }} 
+\\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Only the specified loads which \\
+                                                the system is designed to identify \\
+                                                should be connected
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}l@{}}The system was able to correctly identify\\ the loads specified.\end{tabular}}  &  
+Section~\ref{sec:Load_ID_test}
+\\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}The combinations of loads connected \\
+                                                to the system should not exceed \\
+                                                8000W.
+                                                \end{tabular}} &
+\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}l@{}l@{}}The cable that the prototype used\\ is only rated for \qty{16}{\ampere}. This limit \\ was not exceeded as a safety precaution \\ but proof of sufficient headroom in the design\\is shown.\end{tabular}}  &  
+Section~\ref{sec:Max_laod_test}
+
+
+\\ \hline
+\end{tabular}%
+}
+\caption{Summary of results achieved.}
+\label{tab:Summary_of_results_achieved}
+\end{table}
+
+\subsection{Tools developed for qualification testing}
+\label{sec:Qual_tool}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,thick]
+
+%Start of dash application
+\node[draw,
+    rounded rectangle,
+    minimum width=3cm,
+    minimum height=1cm] 
+    (block1) 
+    {Start Dash Application};
+ 
+%Loop joining co-ordinate   
+\node[coordinate,below=0.5cm of block1] (block2) {};
+
+% 1 second interval check 
+\node[draw,
+    diamond,
+    below= of block2,
+    minimum width=2.5cm,
+    inner sep=0] (block3) {\qty{1}{\second} elapsed};
+    
+% Arrow to interval check 
+\draw[-latex] (block1) edge (block3);
+
+%No text node
+\node[left=0.75cm of block3,fill=white,inner sep=0] (block4) {No};
+
+% Interval check -- No 
+\draw (block3) -- (block4);
+
+%Web-Display Update
+\node[draw,
+    left=of block4,
+    minimum width=2.5cm,
+    minimum height=1cm] (block5) {Update Web-Figures};
+%Arrow from "No" to Web update block
+\draw[-latex] (block4) edge (block5);
+
+\node[coordinate,left=1cm of block5] (block_Web) {};
+\draw[-latex] (block5) edge (block_Web);
+\draw[-latex] (block_Web) |- (block2);
+
+
+%No text node
+\node[right=0.75cm of block3,fill=white,inner sep=0] (block6) {Yes};
+% Interval check -- Yes 
+\draw (block3) -- (block6);
+
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    right=of block6,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block7) {Sample $I_{n} , V_{n}$ \\ \emph{Algorithm~\ref{alg:Sample}}};
+\draw[-latex] (block6) edge (block7);
+
+    
+ % Data Data pre-processing
+\node[draw,
+    align=center,
+    below=0.6cm of block7,
+    minimum width=2.5cm,
+    minimum height=1cm] (block8) {Data pre-processing \\ \emph{Algorithm~\ref{alg:Pre_Process}}};
+\draw[-latex] (block7) edge (block8); 
+
+   
+% Power Calculations
+\node[draw,
+    align=center,
+    below=0.6cm of block8,
+    minimum width=2.5cm,
+    minimum height=1cm] (block9) 
+    {Power Calculations \\ 
+    \emph{Algorithm~\ref{alg:P_inst}} \\
+    \emph{Algorithm~\ref{alg:RMS}} \\
+    \emph{Algorithm~\ref{alg:P_real}} \\
+    \emph{Algorithm~\ref{alg:P_app}} \\
+    };
+\draw[-latex] (block8) edge (block9);
+
+%Calculate FFT   
+\node[draw,
+    align=center,
+    below=0.6cm of block9,
+    minimum width=2.5cm,
+    minimum height=1cm] (block10) {FFT (I)};
+\draw[-latex] (block9) edge (block10);
+
+%Classification  
+\node[draw,
+    align=center,
+    below=0.6cm of block10,
+    minimum width=2.5cm,
+    minimum height=1cm] (block11) {Classification\\ \emph{Algorithm~\ref{alg:deply_DT}}};
+\draw[-latex] (block10) edge (block11);
+
+% Load Check 
+\node[draw,
+    diamond,
+    below=0.6cm of block3,
+    minimum width=2.5cm,
+    inner sep=0] (block12) {State = 'Idle'};
+\node[coordinate,right=1.0cm of block12] (p1) {};
+% Arrow to interval check
+\draw (block11) -| (p1);
+\draw[-latex] (p1) -- (block12);
+\node[left=0.75cm of block12,fill=white,inner sep=0] (p2) {Yes};
+\draw (block12) -- (p2);
+\draw (p2) -| (block_Web);
+\node[below=0.5cm of block12,fill=white,inner sep=0] (p3) {No};
+\draw (block12) -- (p3);
+
+\node[draw,
+    diamond,
+    below=0.6cm of p3,
+    minimum width=2.5cm,
+    inner sep=0] (block13) {State = 'Testing'};
+%No text node
+\draw[-latex] (p3) edge (block13);
+
+\node[left=0.75cm of block13,fill=white,inner sep=0] (p4) {No};
+\draw (block13) -- (p4);
+\draw (p4) -| (block_Web);
+\node[below=0.5cm of block13,fill=white,inner sep=0] (p5) {Yes};
+\draw (block13) -- (p5);
+
+% Voltage and Current Measurement
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=0.6cm of p5,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block14) {Append csv with \\ classification result \\ actual result};
+\draw[-latex] (p5) edge (block14);
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=0.6cm of block14,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block15) {Change to random \\ load control value};
+\draw[-latex] (block14) edge (block15);
+
+\node[draw,
+    trapezium, 
+    trapezium left angle = 65,
+    trapezium right angle = 115,
+    trapezium stretches,
+    below=0.6cm of block15,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center
+] (block16) {Transmit Load Control \\ via Serial };
+\draw[-latex] (block15) edge (block16);
+\draw (block16) -| (block_Web);
+
+\end{tikzpicture}
+\caption{Software flowchart describing the evaluation program implemented on the Beaglebone AI for qualification testing.}
+\label{fig:Qual_test_Flow}
+\end{figure}
+
+\subsection{Qualification tests}
+
+\subsubsection{Qualification test 1:Load identification accuracy test}
+\label{sec:Load_ID_test}
+\begin{itemize}
+    \item [\emph{Objectives of the test or experiment}]\mbox{}\\
+    The objective of the test described below is to verify whether the load detection method of using a random decision tree forest is able to correctly identify the current state of any connected load with a true positive rate of \qty{95}{\percent}.   
+    \item [\emph{Equipment used}]\mbox{}
+    \begin{itemize} 
+        \item Beaglebone AI 
+        \begin{itemize}
+            \item PRU core is running the SPI subroutine 
+            \item Arm core is running the test software described in Figure~\ref{fig:Qual_test_Flow}
+        \end{itemize}
+        \item Mains electricity sampling module \emph{Figure~\ref{fig:Full_hardware_Comparison}}
+        \item Arduino Mega - \emph{Running load control program} 
+        \item FTDI Chip TTL-232RG-VSW5V-WE (RS 730-0155) +5V UART signalling
+        \item 8-way Relay module
+        \item Test loads: \mbox{}
+        \begin{table}[H]
+        \centering
+            \resizebox{\textwidth}{!}{%
+            \begin{tabular}{|ccccc|}
+            \hline
+            \multicolumn{5}{|c|}{\textbf{Summary of load parameter}}                                                                             \\ \hline
+            \multicolumn{1}{|c|}{\textbf{Load Number}} &
+              \multicolumn{1}{c|}{\textbf{Appliance}} &
+              \multicolumn{1}{c|}{\textbf{Power consumption (W)}} &
+              \multicolumn{1}{c|}{\textbf{Manufacture}} &
+              \textbf{Model Number} \\ \hline
+            \multicolumn{1}{|c|}{1} & \multicolumn{1}{c|}{LED Light}     & \multicolumn{1}{c|}{2}   & \multicolumn{1}{c|}{Lightworx} & C352WCE27 \\ \hline
+            \multicolumn{1}{|c|}{2} & \multicolumn{1}{c|}{LED Light}     & \multicolumn{1}{c|}{4}   & \multicolumn{1}{c|}{Lightworx} & C354WCE27 \\ \hline
+            \multicolumn{1}{|c|}{3} & \multicolumn{1}{c|}{CFL Light}     & \multicolumn{1}{c|}{20}  & \multicolumn{1}{c|}{Eurolux}   & G330      \\ \hline
+            \multicolumn{1}{|c|}{4} & \multicolumn{1}{c|}{Halogen Light} & \multicolumn{1}{c|}{70}  & \multicolumn{1}{c|}{Eurolux}   & G877BP    \\ \hline
+            \multicolumn{1}{|c|}{5} & \multicolumn{1}{c|}{Halogen Light} & \multicolumn{1}{c|}{70}  & \multicolumn{1}{c|}{Eurolux}   & G877BP    \\ \hline
+            \multicolumn{1}{|c|}{6} & \multicolumn{1}{c|}{Fan}           & \multicolumn{1}{c|}{15}  & \multicolumn{1}{c|}{Safeway}   & PIA1821   \\ \hline
+            \multicolumn{1}{|c|}{7} & \multicolumn{1}{c|}{Toaster}       & \multicolumn{1}{c|}{850} & \multicolumn{1}{c|}{Pineware}  & PET201    \\ \hline
+        \end{tabular}
+        }
+        \caption{Summary of the loads used in the testing of the detection algorithm.}
+        \label{tab:load}
+        \end{table}
+    \end{itemize}
+    \item [\emph{Test setup and experimental parameters}]\mbox{}\\
+    The Beaglebone and Arduino are loaded with the required test software. The loads are connected to the relay module. The specific loads must be connected in the correct sequence to ensure that the predicted load and the actual load correlate. This specific sequence of loads is to ensure consistency in the multiple runs performed. This ensures that the experiment has two parameters: the actual load which is controlled by the relay and the identified load.  
+    
+    \item [\emph{Steps followed in the test or experiment}]\mbox{}
+    \begin{itemize}
+        \item [Step 1:] The test program and the control dashboard is accessed through the local IP~Address presented in the terminal.
+        \item [Step 2:] The voltage and current waveforms are checked to confirm that the PRU and test program is able to receive information and that the PRU is running.
+        \item [Step 3:] The start test is then selected \emph{Figure~\ref{fig:Dash_1}}.
+        \item [Step 4:] The test program changes the load configuration and issues the command to relay module every 5-seconds.   
+        \item [Step 5:] The predicted and actual load states are appended to a csv file.
+        \item [Step 6:] The csv file is then downloaded off the Beaglebone and imported into python.
+        \item [Step 7:] The data is then plotted as a confusion matrix and the performance metrics are calculated.
+        \item [Step 8:] Steps 1-7 are repeated at different times of the day and on different days to ensure that the results are consistent.
+    \end{itemize}
+    \item [\emph{Results or measurements}]\mbox{}\\
+    Figure~\ref{fig:CM_Qtest_1} is a combination of all the results from the multiple runs of the test described by step 7 above.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{Figures/Q_Tests/Test_1/CM.png}
+        \caption{Confusion matrix depicting the results of the implemented load prediction algorithm.}
+        \label{fig:CM_Qtest_1}
+    \end{figure}
+    \item [\emph{Observations}]\mbox{}\\
+    As can be seen in Figure~\ref{fig:CM_Qtest_1} the developed algorithm was able to predict the correct state of the all the loads with \qty{94.85}{\percent} accuracy.  The main loads that the detection method had more trouble detecting were (as predicted) the loads with small power draws. What is interesting to note is that the detection accuracy of the \qty{4}{\watt} LED was lower than that of the \qty{2}{\watt} LED. The other interesting observation is that the power used by the load did not necessarily impact the accuracy of the detection (with the obvious exception of the toaster). This is evident when comparing the results from the \qty{70}{\watt} Halogen and the \qty{20}{\watt} CFL light, with the latter having much higher identification accuracy. 
+\end{itemize}
+\subsubsection{Qualification test 2:Power accuracy test}
+\label{sec:Power_test}
+\begin{itemize}
+    \item [\emph{Objectives of the test or experiment}]\mbox{}\\
+    The objective of the test described below is to verify that the designed system meets the requirements of a class 2 energy meter. To meet these requirements the device must be able to measure and report the power draw with an error of no greater than \qty{\pm 2.5}{\percent} when the combined current draw of the loads connected exceeds that of \qty{1.5}{\ampere}. 
+    \item [\emph{Equipment used}]\mbox{}
+    \begin{itemize} 
+        \item Beaglebone AI 
+        \begin{itemize}
+            \item PRU core is running the SPI subroutine 
+            \item ARM core is running the test software described in Figure~\ref{fig:Qual_test_Flow}
+        \end{itemize}
+        \item Multimeter:Techgear TG451DL 
+        \item Oscilloscope: RS-PRO IDS-2204E
+        \item DeLonghi \qty{1800}{\watt} heater.
+        \item Mains electricity sampling module \emph{Figure~\ref{fig:Full_hardware_Comparison}}
+        \item Web-browser
+    \end{itemize}
+    \item [\emph{Test setup and experimental parameters}]\mbox{}\\
+    The Beaglebone is loaded with the test software. The test application is then accessed via a web-browser. The heater is then turned on to max heat for 1 minute. This is to ensure that the heater reaches a steady state before the experiment begins as the power draw is far beyond the specified \qty{1800}{\watt}. By doing this when the test is started the only parameter that is being measured is the power upon which the accuracy depends.
+    \item [\emph{Steps followed in the test or experiment}]\mbox{}
+    \begin{itemize}
+        \item [Step 1:] The \qty{1.8}{\kW} heater is turned on and left running for 1 minute.
+        \item [Step 2:] The test is started and the results are recorded as soon as the website that is hosted by the Dash application is accessed via the local IP~Address presented in the terminal.
+        \item [Step 3:] The following checks are performed every 5 min to ensure that the results from the test are valid.
+        \begin{itemize}
+            \item The current waveform as it displays on the GUI is verified with the waveform displayed on the Oscilloscope.
+            \item The voltage and current measurements are confirmed using the multimeter. 
+        \end{itemize}
+        \item[Step 4:] Once the test is completed the csv is transferred into python.
+        \item[Step 5:] A histogram that depicts the measured real power from the test is generated.
+        \item[Step 6:] The measured power fluctuations are converted to an error percentage.
+        \item[Step 7:] The results are depicted in a figure for simple analysis.
+    \end{itemize}
+    \item [\emph{Results or measurements}]\mbox{}
+    
+    The measurements contained in the csv are the real power values that the device reported after being tested.  
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{Figures/Q_Tests/Test_2/Q_Test_2.png}
+        \caption{Histogram depicting variations in the power measurement of a known load.}
+        \label{fig:Qtest_2}
+    \end{figure}
+    \item [\emph{Observations}]\mbox{}\\
+    As can be seen from the legend depicted in Figure~\ref{fig:Qtest_2}, the power measurement had an average mean error of \qty{0.53}{\percent} with one standard deviation of \qty{0.76}{\percent}. From these two metrics it can derived that \qty{68.26}{\percent} of the measured results never exceeded error of \qty{0.76}{\percent} with \qty{99.72}{\percent} of all measurements never having an error that exceeds \qty{2.28}{\percent}, this being below the designed metric. This means that the device meets - and in some aspects exceeds - the requirements for it to be classified as a class 2 energy metering device. 
+\end{itemize}
+\subsubsection{Qualification test 3: Voltage variation test}
+\label{sec:Voltage_test}
+\begin{itemize}
+    \item [\emph{Objectives of the test or experiment}]\mbox{}\\
+    The objective of the test described below is to verify that the designed systems complies with the IEC 60038 voltage standard. This standard stipulates that the voltage supplied to households in South Africa is kept in the range of \qty{230}{\volt} \qty{\pm 10}{\percent}. To meet this requirement, the system must be able to measure the voltage as it fluctuates with the range stipulated above.
+    \item [\emph{Equipment used}]\mbox{}
+    \begin{itemize} 
+        \item Beaglebone AI
+        \item Techgear TG451DL Multimeter
+        \item Deye SUN-8K-SG01LP1-EU Hybrid inverter
+        \item Custom variation of the code described in section~\ref{sec:Qual_tool} where the voltage and time values are appended to a csv instead of the identified load information.
+        \item Web-browser 
+    \end{itemize}
+    \item [\emph{Test setup and experimental parameters}]\mbox{}
+    
+    The device is setup with no load connected. The Beaglebone is loaded with the test software. The test application is then accessed via a web-browser. The measured voltage is confirmed to be correct before the test is ready to begin. The only parameter being measured here is voltage with respect to time.   
+    
+    \item [\emph{Steps followed in the test or experiment}]\mbox{}
+    \begin{itemize}
+        \item [Step 1:] The \qty{1.8}{\kW} heater is turned on and run for 1 minute.
+        \item [Step 2:] The test starts and results are recorded as soon as the website that is hosted by the Dash application is accessed via the local IP~Address presented in the terminal.
+        \item [Step 3:] The test is run for a duration of 30 min, during which the following checks are performed every 5 min to ensure that the results from the test are consistent/valid:
+        \begin{itemize}
+            \item The current waveform as displayed on the GUI is verified with the waveform displayed on the Oscilloscope.
+            \item The voltage and current measurements are confirmed using the multimeter. 
+        \end{itemize}
+        \item[Step 4:] Once the test has concluded, the csv is transferred into python.
+        \item[Step 5:] A histogram that depicts the measured real power from the test is generated.
+        \item[Step 6:] The measured power fluctuations are converted to an error percentage.
+        \item[Step 7:] The results are depicted in a figure for simple analysis.
+    \end{itemize}
+    \item [\emph{Results or measurements}]\mbox{}
+    The two traces in the Figure~\ref{fig:Q_Test_3} and the report voltage from the inverter and the voltage from the device under test. 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{Figures/Q_Tests/Test_3/Q_Test_3.png}
+        \caption{Comparison between the voltage measured by the inverter and the voltage measured by the device}
+        \label{fig:Q_Test_3}
+    \end{figure}
+    \item [\emph{Observations}]\mbox{}
+    As seen in the results depicted above, the voltage reported by the device follows the same curve as that of the inverter. The only exception to this trend occurred during a scheduled power failure. While this did effect the trend, the device was able to follow the trend correctly again once the normal power was restored. It can also be noted that, due to more frequent updates, the DUT voltage appears noisy when it is in fact more accurate, as confirmed by the spot checks done with the multimeter.  
+    
+\end{itemize}
+\subsubsection{Qualification test 4:Update latency test}
+\label{sec:Latency_test}
+\begin{itemize}
+    \item [\emph{Objectives of the test or experiment}]\mbox{}\\
+    The objective of the test described below is to verify that the latency between the actual state chaining of the load and the reported state of the load does not exceed that of 2 seconds.
+    \item [\emph{Equipment used}]\mbox{}
+    \begin{itemize} 
+        \item Beaglebone AI 
+        \begin{itemize}
+            \item PRU core is running the SPI subroutine 
+            \item ARM core is running the test software described in Figure~\ref{fig:Qual_test_Flow}
+        \end{itemize}
+        \item Mains electricity sampling module \emph{Figure~\ref{fig:Full_hardware_Comparison}}
+        \item Web-browser
+    \end{itemize}
+    \item [\emph{Test setup and experimental parameters}]\mbox{}
+    The device is setup with no load connected. The Beaglebone is loaded with the test software. The test application is then accessed via a web-browser. The main program with load identification is used to ensure realistic cpu load. The time of each measurement is taken. Thus the experimental parameter's update time is only dependant on how long the system takes to report an update.
+    
+    \item [\emph{Steps followed in the test or experiment}]\mbox{}
+    \begin{itemize}
+        \item [Step 1:] The \qty{1.8}{\kW} heater is turned on and left running for 1 minute.
+        \item [Step 2:] The test is started and results are recorded as soon as the website that is hosted by the Dash application is accessed via the local IP~Address presented in the terminal.
+        \item [Step 3:] The test is run for a duration of 30 min, during which the following checks are performed every 5 min to ensure that the results from the test are consistent (valid):
+        \begin{itemize}
+            \item The current waveform as displayed on the GUI is verified with the waveform displayed on the Oscilloscope.
+            \item The voltage and current measurements are confirmed using the multimeter. 
+        \end{itemize}
+        \item[Step 4:] Once the test has concluded the csv is transferred into python.
+        \item[Step 5:] A histogram that depicts the measured real power from the test is generated.
+        \item[Step 6:] The measured power fluctuations are converted to an error percentage.
+        \item[Step 7:] The results are presented as a figure for simple analysis.
+    \end{itemize}
+    \item [\emph{Results or measurements}]\mbox{}\\
+    The box and whisker diagram depicted in the Figure~\ref{fig:Q_Test_4} shows the difference between the update times extracted from the csv.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{Figures/Q_Tests/Test_4/Q_Test_4.png}
+        \caption{Box and whisker plot depicting the variation in the measurement update latency.}
+        \label{fig:Q_Test_4}
+    \end{figure}
+    \item [\emph{Observations}]\mbox{}\\
+    As can be seen in the results above, the update time has an average of one second and a maximum value of 1.3 seconds. This means the device meets specifications as the latency between updates never exceeded the specified two seconds as per the design requirements.
+\end{itemize}
+\subsubsection{Qualification test 5:Maximum load test}
+\label{sec:Max_laod_test}
+\begin{itemize}
+    \item [\emph{Objectives of the test or experiment}]\mbox{}\\
+    The objective of the test described below is to verify that the designed system is able to measure up to the rated max combined power draw of \qty{8000}{\watt}.
+    \item [\emph{Equipment used}]\mbox{}
+    \begin{itemize} 
+        \item Beaglebone AI 
+        \begin{itemize}
+            \item PRU core is running the SPI subroutine 
+            \item ARM core is running the test software described in Figure~\ref{fig:Qual_test_Flow}
+        \end{itemize}
+        \item DeLonghi \qty{1800}{\watt} heater
+        \item Mains electricity sampling module \emph{Figure~\ref{fig:Full_hardware_Comparison}}
+        \item Web-browser
+    \end{itemize}
+    \item [\emph{Test setup and experimental parameters}]\mbox{}\\
+    The Beaglebone is loaded with the test software. The test application is then accessed via a web-browser. The heater is then turned on to max heat for 1 minute. This is to ensure that the heater reaches steady state before the experiment begins as the power draw is far beyond the specified \qty{1800}{\watt}. In doing this when the test is started the only parameter that being measured is the power upon which the headroom of the ADC needs to measured against.
+    \item [\emph{Steps followed in the test or experiment}]\mbox{}
+    \begin{itemize}
+        \item [Step 1:] The \qty{1.8}{\kW} heater is turned on and left running for 1 minute.
+        \item [Step 2:] The test is started and results recorded as soon as the website that is hosted by the Dash application is accessed via the local IP~Address presented in the terminal.
+        \item [Step 3:] The test is run for a duration of 30 min, during which the following checks are performed every 5 min to ensure that the results from the test are consistent (valid)
+        \begin{itemize}
+            \item The current waveform as displayed on the GUI is verified with the waveform displayed on the Oscilloscope.
+            \item The voltage and current measurements are confirmed using the multimeter. 
+        \end{itemize}
+        \item[Step 4:] Once the test has concluded the csv is transferred into python.
+        \item[Step 5:] A histogram that depicts the measured real power from the test is generated.
+        \item[Step 6:] The measured power fluctuations are converted to an error percentage.
+        \item[Step 7:] The results are presented as a figure for simple analysis.
+    \end{itemize}
+    \item [\emph{Results or measurements}]\mbox{}\\
+    The Figure~\ref{fig:Q_Test_5_I} and Figure~\ref{fig:Q_Test_5_V} show the raw binary value produced by the ADC converted to an integer value. The peaks and troughs are all detected and the statistics are displayed on the right of the raw signal. 
+    \begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Q_Tests/Test_5/Q_Test_5_Ipeak.png}
+        \caption{Instantaneous current signal with peaks marked.}
+        \label{fig:Q_Test_5_I_peak}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Q_Tests/Test_5/Q_Test_5_I_Stats.png}
+        \caption{Distribution of the positive and negative integers.}
+        \label{fig:Q_Test_5_I_Stats}
+     \end{subfigure}
+        \caption{Results used to confirm the available ADC headroom.}
+        \label{fig:Q_Test_5_I}
+    \end{figure}
+
+    \begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Q_Tests/Test_5/Q_Test_5_Vpeak.png}
+        \caption{Instantaneous voltage signal with peaks marked.}
+        \label{fig:Q_Test_5_V_peak}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Figures/Q_Tests/Test_5/Q_Test_5_V_Stats.png}
+        \caption{Distribution of the positive and negative integers.}
+        \label{fig:Q_Test_5_V_Stats}
+     \end{subfigure}
+        \caption{Results used to confirm the available ADC headroom.}
+        \label{fig:Q_Test_5_V}
+    \end{figure}
+    \item [\emph{Observations}]\mbox{}\\
+    As can be seen from Figure~\ref{fig:Q_Test_5_I_Stats}, the largest integer that represented the known 1800 W load is 5224. Since the ADC is a differential ADC, the number of distinct positive and negative values is $2^{15}$. In dividing the the max integer with the known number of steps, the measurement is \qty{16}{\percent} of the total range. Repeating this calculation with the 1800W of the load and 8000W gives a result of  \qty{22}{\percent}. Thus, the system clearly has sufficient headroom to measure combined loads that can draw a total load of \qty{8000}{\watt}. 
+    
+\end{itemize}
+
+\newpage
+
+%% End of File.
+
+

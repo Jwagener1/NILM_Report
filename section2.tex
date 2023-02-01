@@ -1,0 +1,42 @@
+%%
+%%  Department of Electrical, Electronic and Computer Engineering.
+%%  EPR400/2 Final Report - Section 2.
+%%  Copyright (C) 2011-2021 University of Pretoria.
+%%
+
+\section{Approach}
+The goal was to develop a smart energy meter to identify the real-time state of the connected loads. The energy meter was produced to meet a number of requirements -  systems and subsystems aimed at fulfilling each requirement respectively were combined to create a fully functioning end product.
+\par
+The point of departure for the design process was to split the energy meter into two distinct subsystems. The first was the analogue front end which facilitated a safe tie-in with the live 230V service. The energy meter and user was galvanically isolated from mains electricity supply. The second subsystem processed the sampled data, and created the interface through which the user can view and interact with this processed data.
+\par 
+The first part of the design (discussed in more detail in section 3, below) focused on the ADCs design requirements. 
+An ADC and embedded platform were selected once the ENOB and sample rate were determined. The preferred outcome was to obtain an embedded system with an onboard ADC. However, such a platform which meets the design requirements was found to be unjustifiably expensive given its intended application. An alternative solution was thus to select the embedded platform and external ADC which still meets the design requirements but which would be more cost-effective.
+\par
+Once the ADC was selected, a circuit was built to galvanically isolate the device from mains electricity, to convert voltage, and to current signals to a range the ADC can measure.
+Transformers (safety and current clamp), optocouplers and sense resistors were considered as potential isolation methods. The safety transformer was determined to be the most beneficial method with the least negligible drawbacks for voltage measurements. Meanwhile (as will be discussed in more detail later), the current clamp transformer was found as the best solution for the current measurement. Thereafter the complementary circuitry was designed to interface the transformer and current clamp to the respective ADCs.
+\par
+The completed analogue circuity was successfully simulated, after which the circuit schematics were transformed into hardware schematics. The hardware schematics were then used to create the physical circuity. Here a modular design was implemented to allow for individual sections of the circuit to be modified or changed if necessary as opposed to the entire circuit having to be re-designed or -constructed following possible change.
+\par
+The embedded platform and ADCs were interfaced with a serial communication protocol which allowed the two ADCs to sample the voltage and current simultaneously, reducing the need for phase compensation when calculating the power. The raw binary data that the ADC produced was converted to a floating point format, and calibrated to reflect the actual values of the voltage and current.\footnote[1]{Implemented on embedded platform} 
+\par
+Two digital FIR filters - an Anti-aliasing and a \qty{50}{\hertz}~low-pass filter - were designed from first principles and then applied to the raw signal sampled by the ADCs. These filters used different window functions to fulfil different functions. The Anti-aliasing filter was used to prevent the occurring of unwanted spectral components in the frequency system of interest as a result of the sampling process. The \qty{50}{\hertz}~low-pass filter was designed to isolate the \qty{50}{\hertz} power component from the harmonics to make the power measurements more accurate.\footnotemark[1]
+\par
+Thereafter, a data collection program was developed to collect the necessary features for the identification of loads. These features included the real and reactive power components, as well as the harmonics of the current load which were produced by performing the FFT transform on the current signal.
+\par 
+A detection algorithm was then developed, the main goal being to obtain an algorithm which offered sufficient accuracy with the lowest possible performance overhead. A number of method algorithm options were considered, namely classification decision trees, neural networks and K-Nearest Neighbors. The investigation found that multiple decision tree classifiers for the creation of a random forest was the method which best fulfilled the necessary requirements. As such, the collected data was used to train the decision trees and create the forest.\footnote[2]{Implemented on personal computer}
+\par
+The hardware and software were then combined. The figure~\ref{fig:Flow_1} depicts the final interfacing of the main program, which called all the above software, resulting in a completed system that performed the energy calculation and load detection. The main program then presented the data on a web page for the user to view in accordance with the flowchart depicted in figure~\ref{fig:Flow_1}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Flow/FLow_1.png}
+    \caption{Flow chart of software functions integrated into a complete detection system.}
+    \label{fig:Flow_1}
+\end{figure}
+
+
+ 
+\newpage
+
+%% End of File.
+
